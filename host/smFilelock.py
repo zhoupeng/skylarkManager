@@ -27,9 +27,6 @@ import errno
 import os
 import logging
 
-#from ganeti import errors
-#from ganeti.utils import retry
-
 import smErrors as errors
 import smRetry as retry
 

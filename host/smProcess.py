@@ -15,15 +15,6 @@ import resource
 
 from cStringIO import StringIO
 
-#from ganeti import errors
-#from ganeti import constants
-
-#from ganeti.utils import retry as utils_retry
-#from ganeti.utils import wrapper as utils_wrapper
-#from ganeti.utils import text as utils_text
-#from ganeti.utils import io as utils_io
-#from ganeti.utils import algo as utils_algo
-
 import smErrors as errors
 import smConstants as constants
 

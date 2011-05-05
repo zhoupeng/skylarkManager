@@ -29,10 +29,6 @@ import tempfile
 import errno
 import time
 
-#from ganeti import errors
-#from ganeti import constants
-#from ganeti.utils import filelock
-
 import smErrors as errors
 import smConstants as constants
 import smFilelock as filelock

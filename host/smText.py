@@ -28,7 +28,6 @@ import os
 import time
 import collections
 
-#from ganeti import errors
 
 import smErrors as errors
 
