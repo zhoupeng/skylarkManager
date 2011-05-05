@@ -9,18 +9,112 @@
 # -------------------------------------------------------------------
 import smProcess as utilsProcess
 import smRetry as utilsRetry
+import smErrors as errors
 
 class XenNode(object):
 
     def getMemInfo(self):
         pass
 
-    def getCPUInfo(self):
-        pass
+    def getCPUUsage(self):
+        xentop = self._getXentop()
+
+        cpuusage = {}
+        cpuusage['cpusec'] = 0
+        cpuusage['cpurate'] = 0.0
+
+        for ele in xentop:
+            cpuusage['cpurate'] += ele[3]
+            cpuusage['cpusec'] += ele[2]
+
+        return cpuusage
+        
+
+    @staticmethod
+    def _runXentop(xentop_errors, it = 2, delay = 1):
+        """Helper function for L{_getXentop} to run "xentop -i $it -b"
+
+        @type it: int
+        @param it: iteration count, must >= 2
+        @type delay: float
+        @param delay: seconds between updates(default of xentop 3)
+        @rtype: list of tuples
+        @return: $it iteration results.
+        """
+        result = utilsProcess.RunCmd(["xentop", "-i", it, "-b", "-d", delay])
+        return result.stdout.splitlines()
+
+    @classmethod
+    def _getXentop(cls, it = 2, delay = 1):
+        """Return the last iteration of xentop.
+
+        @type it: int
+        @param it: iteration count, must >= 2
+        @type delay: float
+        @param delay: seconds between updates(default of xentop 3)
+        @rtype: list of tuples
+        @return: list of (NAME STATE CPU(sec) CPU(%) MEM(k) MEM(%) MAXMEM(k) MAXMEM(%) 
+        VCPUS NETS NETTX(k) NETRX(k) VBDS VBD_OO VBD_RD VBD_WR VBD_RSECT VBD_WSECT SSID)
+        """
+        xentop_errors = []
+        try:
+            lines = utilsRetry.Retry(cls._runXentop, 
+                       1, 5, args=(xentop_errors, it, delay))
+        except utilsRetry.RetryTimeout:
+            if xentop_errors:
+                xentop_result = xentop_errors.pop()
+                errmsg = ("xentop failed, timeout exceeded (%): %s" %
+                           (xentop_result.fail_reason, xentop_result.output))
+            else:
+                errmsg = "xentop -i %d -b -d %0.1f failed" % (it, delay)
+            raise errors.HypervisorError(errmsg)
+
+        # keep the last iteration and 
+        # skip over the heading
+        lines.reverse()
+        lines = lines[:lines.index("      NAME  STATE   CPU(sec) CPU(%)     \
+MEM(k) MEM(%)  MAXMEM(k) MAXMEM(%) VCPUS NETS NETTX(k) NETRX(k) VBDS   VBD_OO\
+   VBD_RD   VBD_WR  VBD_RSECT  VBD_WSECT SSID")]
+
+        # clean up 'no limit' string of dom0 max mem
+        # clean up 'n/a' string of MAXMEM(%) 
+        lines.reverse()
+        lines[0] = lines[0].replace("no limit", "0")
+        lines[0] = lines[0].replace("n/a", "0")
+       
+        result = []
+        for line in lines:
+            # format of line
+            # NAME STATE CPU(sec) CPU(%) MEM(k) MEM(%) MAXMEM(k) MAXMEM(%) VCPUS 
+            # NETS NETTX(k) NETRX(k) VBDS VBD_OO VBD_RD VBD_WR VBD_RSECT VBD_WSECT SSID
+            data = line.split()
+            if len(data) != 19:
+                raise errors.HypervisorError("Can't parse output of xentop,"
+                                             "line: %s" % line)
+            try:
+                data[2] = long(data[2]) # CPU(sec)
+                data[3] = float(data[3]) # CPU(%)
+                data[4] = long(data[4]) # MEM(k)
+                data[5] = float(data[5]) # MEM(%)
+                data[6] = long(data[6]) # MAXMEM(k)
+                data[7] = float(data[7]) # MAXMEM(%)
+                data[8] = int(data[8]) # VCPUS
+                data[9] = int(data[9]) # NETS
+                data[10] = int(data[10]) # NETTX(k)
+                data[11] = int(data[11]) # NETRX(k)
+                data[12] = int(data[12]) # VBDS
+                # ... ignore
+            except (TypeError, ValueError), err:
+                raise errors.HypervisorError("Can't parse output of xentop,"
+                                             " line: %s, error: %s" % (line, err))
+            result.append(data)
+
+        return result
+
 
     @staticmethod
     def _runXmList(xmlist_errors):
-        """Helper function for L{_GetXMList} to run "xm list".
+        """Helper function for L{_getXMList} to run "xm list".
 
         """
         result = utilsProcess.RunCmd(["xm", "list"])
@@ -43,12 +137,12 @@ class XenNode(object):
             lines = utilsRetry.Retry(cls._runXmList, 1, 5, args=(xmlist_errors, ))
         except utilsRetry.RetryTimeout:
             if xmlist_errors:
-           	xmlist_result = xmlist_errors.pop()
+                xmlist_result = xmlist_errors.pop()
 
-	        errmsg = ("xm list failed, timeout exceeded (%s): %s" %
+                errmsg = ("xm list failed, timeout exceeded (%s): %s" % 
                           (xmlist_result.fail_reason, xmlist_result.output))
-	    else:
-		    errmsg = "xm list failed"
+            else:
+                errmsg = "xm list failed"
 
             raise errors.HypervisorError(errmsg)
 

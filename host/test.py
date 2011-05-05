@@ -28,7 +28,10 @@ if __name__ == '__main__':
     #print (test._GetOutput())
     xennode = smXen.XenNode()
 
-    print smXen.XenNode._getXMList(include_node = True)
+    #print smXen.XenNode._getXMList(include_node = True)
     print xennode.getNodeInfo();
-    print xennode.verify()
+    #print xennode.verify()
+
+    #print smXen.XenNode._getXentop()
+    print xennode.getCPUUsage()
 
