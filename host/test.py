@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Filename: host/smMain.py
+# Filename: host/test.py
 #
 # -------------------------------------------------------------------
 #
@@ -8,7 +8,6 @@
 #
 # -------------------------------------------------------------------
 
-import smXen 
 import sys
 import simplejson as json
 class Test: 
@@ -26,6 +25,9 @@ if __name__ == '__main__':
 
     #test = Test()
     #print (test._GetOutput())
+
+    # smXen 
+    import smXen 
     xennode = smXen.XenNode()
 
     #print smXen.XenNode._getXMList(include_node = True)
