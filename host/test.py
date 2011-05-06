@@ -35,3 +35,25 @@ if __name__ == '__main__':
     #print smXen.XenNode._getXentop()
     print xennode.getCPUUsage()
 
+    # smNet
+    import smNet
+    hostname1 = smNet.getHostname()
+    print hostname1.name
+    print hostname1.ip
+
+    hostname2 = smNet.getHostname('cloud-os.org')
+    print hostname2.name
+    print hostname2.ip
+    
+    print smNet.Hostname.getSysName()
+    print smNet.Hostname.getFqdn('nfs.iscas.ac.cn')
+
+    print smNet.tcpPing(hostname2.ip, 80)
+    print smNet.tcpPing(hostname2.ip, 8080)
+
+    #IPV4 127.0.0.0 to 127.255.255.255
+    #IPV6 0:0:0:0:0:0:0:1 (also written as ::1)
+    print smNet.IP4Address.isLoopback('127.255.255.255')
+    print smNet.IP6Address.isLoopback('::1')
+    print smNet.IP4Address.isLoopback('128.0.0.1')
+
