@@ -372,6 +372,11 @@ class IPAddressError(GenericError):
   """
 
 
+class PortError(GenericError):
+    """Generic Port number error.
+    """
+
+
 class LuxiError(GenericError):
   """LUXI error.
 
