@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 #
-# Filename: host/smMessage.py
+# Filename: common/smCMD.py
 #
 # -------------------------------------------------------------------
 #
+# Author:
+#  Zhou Peng <ailvpeng25@gmail.com>, 2011.04 ~
 # 
-#
 # -------------------------------------------------------------------
 
 class CMDHostAgent:

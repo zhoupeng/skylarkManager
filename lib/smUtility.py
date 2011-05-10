@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 #
-# Filename: host/smUtility.py
+# Filename: lib/smUtility.py
 #
 # -------------------------------------------------------------------
 #
-# 
+#  Author:
+#  Zhou Peng <ailvpeng25@gmail.com>, 2011.04 ~
 #
 # -------------------------------------------------------------------
 

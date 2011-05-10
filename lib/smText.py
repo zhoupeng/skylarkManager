@@ -18,6 +18,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 # 02110-1301, USA.
 
+# import into skylark by Zhou Peng <ailvpeng25@gmail.com> in 2011.04
+
 """Utility functions for manipulating or working with text.
 
 """
