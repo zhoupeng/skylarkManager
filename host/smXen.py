@@ -7,6 +7,8 @@
 # 
 #
 # -------------------------------------------------------------------
+import libconf
+
 import smProcess as utilsProcess
 import smRetry as utilsRetry
 import smErrors as errors
