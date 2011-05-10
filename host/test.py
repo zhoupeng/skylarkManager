@@ -7,6 +7,7 @@
 # 
 #
 # -------------------------------------------------------------------
+import libconf
 
 import sys
 import simplejson as json
@@ -58,4 +59,10 @@ if __name__ == '__main__':
     print smNet.IP4Address.isLoopback('127.255.255.255')
     print smNet.IP6Address.isLoopback('::1')
     print smNet.IP4Address.isLoopback('128.0.0.1')
+
+    # smHost
+    import smHost
+    h1 = smHost.Host("192.168.1.187", 1234)
+    #h1 = smHost.Host("192.168.1.187", -1)
+    print h1.join()
 
