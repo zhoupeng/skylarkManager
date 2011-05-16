@@ -15,8 +15,14 @@ import socket
 import smErrors as errors
 import smXen
 from smCMD import *
+import smIO
+import simplejson as json
 
 class Host(object):
+    """
+    @type uuid: str
+    @param uuid: the uuid of this host node, readonly
+    """
 
     def __init__(self, aggentIP, aggentPort, pool = ''):
         if (smNet.IPAddress.getAddressFamily(aggentIP) == socket.AF_INET):
@@ -34,6 +40,17 @@ class Host(object):
 
         self.sock = socket.socket(type = socket.SOCK_STREAM)
         self.node = smXen.XenNode()
+        self.__uuid = smIO.NewUUID()
+
+    def getType(self):
+        """ get the type of this host node
+        """
+        return self.node.getType()
+
+    def getUUID(self):
+        """ get the uuid of this host node.
+        """
+        return self.__uuid
 
     def join(self):
         """join in the cluster
@@ -41,10 +58,18 @@ class Host(object):
         # sockaddr is tuple
         ag = (self.aggentAddr.address, self.aggentPort)
         self.sock.connect(ag)
-        self.sock.send(CMDHostAgent.join)
-        data = self.sock.recv(128)
-        return data
 
+        # host join req to agent.
+        self.sock.send(CMDHostAgent.cmd_join(self.getUUID(), self.getType()))
+
+        ack = self.sock.recv(128)
+        while not ack:
+            ack = self.sock.recv(128)
+        ackobj = json.loads(ack)
+        if (ackobj[0] == CMDHostAgent.join and 
+                        ackobj[1]['uuid'] == self.getUUID()):
+            return ackobj[1]['succeed']
+        raise errors.RemoteError("Unexpected data received:%s", ack);
 
     def leave(self):
         """leave the cluster

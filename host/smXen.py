@@ -13,11 +13,15 @@ import libconf
 import smProcess as utilsProcess
 import smRetry as utilsRetry
 import smErrors as errors
+from CONSTANTS import *
 
 class XenNode(object):
 
     def getMemInfo(self):
         pass
+
+    def getType(self):
+        return XENHOST
 
     def getCPUUsage(self):
         xentop = self._getXentop()

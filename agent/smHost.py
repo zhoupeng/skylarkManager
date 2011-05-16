@@ -19,6 +19,8 @@ import threading
 class Host(threading.Thread):
     """ Present a host node
     """
+    __uuid = None
+
     def __init__(self, sock = None, addr = None, type = None):
         """
         @type type: string
@@ -56,9 +58,19 @@ class Host(threading.Thread):
                                            "needed before host thread run.")
 
         while True:
-            data = self.sock.recv(128)
-            if data:
-                print data
-                self.sock.send(data)
+            cmd = self.sock.recv(128)
+            if cmd:
+                jsobj = json.loads(cmd)
+
+                if jsobj[0] == CMDHostAgent.join:
+                    if not self.__uuid:
+                        self.__uuid = jsobj[1]['uuid']
+                        self.type = jsobj[1]['type']
+                        self.sock.send(CMDHostAgent.ack_join(self.__uuid, True))
+                    else:
+                        print("Unexpected data received: %s: the host login req send again.", cmd)
+                        self.sock.send(CMDHostAgent.ack_join(self.__uuid, False))
+                        continue
+                #elif:
 
 
