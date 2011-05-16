@@ -30,9 +30,9 @@ def hostlistener(listener):
         # insert into the hostlist
         hostList.append(h)
         h.start()
-        h.join()
-        print "hostlistener() %s" % h
-        h = None
+        #h.join()
+        print "hostlistener(): %s " % h
+        #h = None
 
 
 def clientlistener(listener):
