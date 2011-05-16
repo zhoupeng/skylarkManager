@@ -11,7 +11,6 @@
 import libconf
 
 import sys
-import simplejson as json
 class Test: 
     def _GetOutput(self):
         """Returns the combined stdout and stderr for easier usage.
@@ -60,6 +59,18 @@ if __name__ == '__main__':
     print smNet.IP4Address.isLoopback('127.255.255.255')
     print smNet.IP6Address.isLoopback('::1')
     print smNet.IP4Address.isLoopback('128.0.0.1')
+
+    # json
+    # http://docs.python.org/library/json.html
+    import simplejson as json
+    # Encoding
+    pylist = ['foo', {'bar': ('baz', None, 1.0, 2)}]
+    encoded = json.dumps(pylist, indent = 4)
+    print encoded
+    # Decoding
+    jstr = '["foo", {"bar":["baz", null, 1.0, 2]}]'
+    decoded = json.loads(jstr)
+    print decoded[1]
 
     # smHost
     import smHost
