@@ -12,3 +12,6 @@
 # host types
 XENHOST = "xen"
 KVMHOST = "kvm"
+
+# How long to report host resource once
+RS_REPORT_INTERVAL = 30

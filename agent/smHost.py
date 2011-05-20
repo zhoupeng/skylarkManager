@@ -58,7 +58,7 @@ class Host(threading.Thread):
                                            "needed before host thread run.")
 
         while True:
-            cmd = self.sock.recv(128)
+            cmd = self.sock.recv(1024)
             if cmd:
                 jsobj = json.loads(cmd)
 
@@ -71,6 +71,7 @@ class Host(threading.Thread):
                         print("Unexpected data received: %s: the host login req send again.", cmd)
                         self.sock.send(CMDHostAgent.ack_join(self.__uuid, False))
                         continue
-                #elif:
+                elif jsobj[0] == CMDHostAgent.rsreport:
+                    print jsobj
 
 

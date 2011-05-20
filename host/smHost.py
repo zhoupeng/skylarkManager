@@ -17,6 +17,9 @@ import smXen
 from smCMD import *
 import smIO
 import simplejson as json
+import threading
+import smTimer
+from CONSTANTS import *
 
 class Host(object):
     """
@@ -41,6 +44,8 @@ class Host(object):
         self.sock = socket.socket(type = socket.SOCK_STREAM)
         self.node = smXen.XenNode()
         self.__uuid = smIO.NewUUID()
+        # periodical resource reporter
+        self.rsReporter = None
 
     def getType(self):
         """ get the type of this host node
@@ -52,15 +57,22 @@ class Host(object):
         """
         return self.__uuid
 
-    def join(self):
+    def joinIn(self):
         """join in the cluster
+        rename join with joinIn to avoid mixing up with Thread.join
         """
         # sockaddr is tuple
         ag = (self.aggentAddr.address, self.aggentPort)
         self.sock.connect(ag)
 
-        # host join req to agent.
-        self.sock.send(CMDHostAgent.cmd_join(self.getUUID(), self.getType()))
+        cpuuse = self.node.getCPUUsage()
+        nodeinfo = self.node.getNodeInfo()
+        misc = {}
+        misc.update(cpuuse, **nodeinfo)
+        misc.update(type = self.getType())
+        del misc['cpusec']
+        # host join req to agent, ** used for keyword args(that is dict)
+        self.sock.send(CMDHostAgent.cmd_join(self.getUUID(), **misc))
 
         ack = self.sock.recv(128)
         while not ack:
@@ -75,3 +87,25 @@ class Host(object):
         """leave the cluster
         """
         pass
+
+    def start(self):
+        # periodical resource reporter
+        self.rsReporter = smTimer.BackgroundTask(RS_REPORT_INTERVAL, 
+                                                 Host._resourceReport, [self])
+        self.rsReporter.start()
+
+    @staticmethod
+    def _resourceReport(thisHost):
+        """ The timer function of rsReporter.
+        """
+        cpuuse = thisHost.node.getCPUUsage()
+        nodeinfo = thisHost.node.getNodeInfo()
+
+        report = {}
+        report.update(cpurate = cpuuse['cpurate'],
+                      total_memory = nodeinfo['total_memory'],
+                      free_memory = nodeinfo['free_memory'],
+                      memory_dom0 = nodeinfo['memory_dom0'])
+        # send resource report, ** used for keyword args(that is dict)
+        self.sock.send(CMDHostAgent.cmd_rsreport(self.getUUID(), **report))
+
