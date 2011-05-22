@@ -59,8 +59,9 @@ class BackgroundTask(threading.Thread):
                 return
             try:
                 self.function(*self.args, **self.kwargs)
-            except Exception, x:
-                emsg = "Error in background task thread function %r." % self.function
+            except Exception, err:
+                emsg = ("Error in background task thread function %r, error: %s."
+                        % (self.function, err))
                 raise errors.GenericError(emsg)
    
     def _set_daemon(self):
