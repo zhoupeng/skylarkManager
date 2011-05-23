@@ -231,8 +231,10 @@ MEM(k) MEM(%)  MAXMEM(k) MAXMEM(%) VCPUS NETS NETTX(k) NETRX(k) VBDS   VBD_OO\
                     result['cpu_nodes'] = int(val)
                 elif key == 'cores_per_socket':
                     cores_per_socket = int(val)
+                    result['cores_per_socket'] = cores_per_socket
                 elif key == 'threads_per_core':
                     threads_per_core = int(val)
+                    result['threads_per_core'] = threads_per_core
 
         if (cores_per_socket is not None and
               threads_per_core is not None and nr_cpus is not None):
