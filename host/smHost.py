@@ -115,7 +115,6 @@ class Host(object):
 
         report = {}
         report.update(cpurate = cpuuse['cpurate'],
-                      memory_total = nodeinfo['memory_total'],
                       memory_free = nodeinfo['memory_free'],
                       memory_dom0 = nodeinfo['memory_dom0'])
         # send resource report, ** used for keyword args(that is dict)
