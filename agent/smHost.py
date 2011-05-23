@@ -64,7 +64,7 @@ class Host(threading.Thread):
             raise smErrors.ProgrammerError("host initialization is "
                                            "needed before host thread run.")
 
-        while True:
+        while self.ready:
             cmd = self.sock.recv(1024)
             if cmd:
                 jsobj = json.loads(cmd)
@@ -86,7 +86,8 @@ class Host(threading.Thread):
                         print self.latestReport
                         self.sock.send(CMDHostAgent.ack_join(self.__uuid, True))
                     else:
-                        print("Unexpected data received: %s: the host login req send again.", cmd)
+                        print("Unexpected data received: %s: the host "
+                              "login req send again.", cmd)
                         self.sock.send(CMDHostAgent.ack_join(self.__uuid, False))
                         continue
                 elif jsobj[0] == CMDHostAgent.rsreport:

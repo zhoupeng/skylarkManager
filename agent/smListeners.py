@@ -21,7 +21,7 @@ def hostlistener(listener):
     """
     listener.sock.listen(5)
 
-    while True:
+    while listener.running:
         global hostList
         connSock, addr = listener.sock.accept()
 
@@ -71,6 +71,7 @@ class Listener(threading.Thread):
         self.type = type
         self.sock = socket.socket(type = socket.SOCK_STREAM)
         self.sock.bind((self.host, self.port))
+        self.running = True
     
     def run(self):
         listenhandlers[self.type](self)
