@@ -22,13 +22,19 @@ def hostlistener(listener):
     listener.sock.listen(5)
 
     while listener.running:
-        global hostList
+        global hosts
         connSock, addr = listener.sock.accept()
 
         h = smHost.Host()
         h.init(connSock, addr, XENHOST)
-        # insert into the hostlist
-        hostList.append(h)
+
+        hosts.lock.acquire()
+        try:
+            # insert into the hostlist
+            hosts.nodes.append(h)
+        finally:
+            hosts.lock.release()
+
         h.start()
         #h.join()
         print "hostlistener(): %s " % h
