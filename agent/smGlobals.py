@@ -9,6 +9,7 @@
 #
 # -------------------------------------------------------------------
 import threading
+import smDump
 
 class LockList:
     """ Wraper of List with lock
@@ -27,6 +28,8 @@ class LockList:
         self.nodes.append(node)
 
     def dump(self):
+        print "Dump nodes of LockList:"
+        smDump.dumpObj(self)
         for n in self.nodes:
             n.dump()
 

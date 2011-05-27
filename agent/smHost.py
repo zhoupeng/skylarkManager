@@ -14,6 +14,7 @@ import socket
 from smCMD import *
 import smErrors
 import threading
+import smDump
 
 
 class Host(threading.Thread):
@@ -94,4 +95,5 @@ class Host(threading.Thread):
                     self.latestReport.update(jsobj[1])
                     print self.latestReport
 
-
+    def dump(self):
+        smDump.dumpObj(self)
