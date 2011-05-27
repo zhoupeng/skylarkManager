@@ -9,6 +9,12 @@
 #  Zhou Peng <ailvpeng25@gmail.com>, 2011.05 ~
 #
 # -------------------------------------------------------------------
+""" Three steps to add your own sched method:
+1. Add your sched method to Scheduler
+2. Give a string name for your sched method
+3. Add an item to Scheduler.__sched_method_map based on step 1&2
+"""
+
 import libconf
 from smGlobals import *
 
@@ -38,17 +44,20 @@ class Scheduler:
     # Define a proper name for your sched method here.
     M_DEFAULT = 'default'
 
-    __method = Scheduler.M_DEFAULT
-
-    sched_method_map = { Scheduler.M_CYCLIC: Scheduler.__cyclic,
-                         Scheduler.M_CPU: Scheduler.__cpu,
-                         Scheduler.M_MEM: Scheduler.__mem,
-                         Scheduler.M_CPU_MEM: Scheduler.__cpu_mem,
-                         Scheduler.M_MEM_CPU: Scheduler.__mem_cpu, 
-                         # Add a new table item for your own sched method here.
-                         Scheduler.M_DEFAULT: Scheduler.__cyclic }
+    __method = M_DEFAULT
+    __sched_method_map = {}
 
     def __init__(self):
+
+        self.__sched_method_map = { Scheduler.M_CYCLIC: self.__cyclic,
+                         Scheduler.M_CPU: self.__cpu,
+                         Scheduler.M_MEM: self.__memory,
+                         Scheduler.M_CPU_MEM: self.__cpu_mem,
+                         Scheduler.M_MEM_CPU: self.__mem_cpu, 
+                         # Add a new table item for
+                         # your own sched method here.
+                         Scheduler.M_DEFAULT: self.__cyclic }
+
         self.__method = Scheduler.M_DEFAULT 
 
     @staticmethod
@@ -62,7 +71,7 @@ class Scheduler:
             Scheduler.singleton = Scheduler()
             return Scheduler.singleton
 
-    def setMethod(self, method, *args = None, **kwargs = None):
+    def setMethod(self, method, *args, **kwargs):
         """ set the current sched method
         @type method: str
         @param method: method name
@@ -73,14 +82,13 @@ class Scheduler:
         """
 
         ret = True
-        if method in Scheduler.sched_method_map.keys():
+        if method in self.__sched_method_map.keys():
             self.__method = method
             self.args = args
             self.kwargs = kwargs
         else:
-            print "Sched Method: %s is not supported\n"
-                  "Keep to use current method: %s"
-                   % (method, self.getMethod())
+            print """Sched Method: %s is not supported
+ Keep to use current method: %s""" % (method, self.getMethod())
             ret = False
         
         return ret
@@ -88,7 +96,7 @@ class Scheduler:
     def getMethod(self):
         """ Get the current method.
         """
-        return __method 
+        return self.__method 
 
     def schedule(self, hosts):
         """ Determine the node to schedule
@@ -98,16 +106,16 @@ class Scheduler:
         """
         node = None
 
-        hosts.lock.acquire()
+        hosts.lock()
         try:
-            node = self.sched_method_map[self.__method](hosts.nodes)
+            print self.__sched_method_map[self.__method]
+            node = self.__sched_method_map[self.__method](hosts.nodes)
         finally:
-            hosts.lock.release()
+            hosts.unlock()
 
         return node
 
-    @staticmethod
-    def __cyclic(nodes):
+    def __cyclic(self, nodes):
         """ cyclic schedule 
 
         @type nodes: list
@@ -115,8 +123,7 @@ class Scheduler:
         """
         pass
 
-    @staticmethod
-    def __memory(nodes):
+    def __memory(self, nodes):
         """ schedule by mem
 
         @type nodes: list
@@ -124,8 +131,7 @@ class Scheduler:
         """
         pass
 
-    @staticmethod
-    def __cpu(nodes):
+    def __cpu(self, nodes):
         """ schedule by cpu 
 
         @type nodes: list
@@ -133,8 +139,7 @@ class Scheduler:
         """
         pass
 
-    @staticmethod
-    def __mem_cpu(nodes):
+    def __mem_cpu(self, nodes):
         """ schedule by men&&cpu, mem first.
 
         @type nodes: list
@@ -143,8 +148,7 @@ class Scheduler:
 
         pass
 
-    @staticmethod
-    def __cpu_mem(nodes):
+    def __cpu_mem(self, nodes):
         """ schedule by cpu&&mem, cpu first.
 
         @type nodes: list
@@ -153,4 +157,5 @@ class Scheduler:
         pass
 
     # Add your own sched method here
+    # def __yourmethod(self, ...)
 
