@@ -10,10 +10,25 @@
 # -------------------------------------------------------------------
 import threading
 
-# hosts
-class HostsStruct:
+class LockList:
+    """ Wraper of List with lock
+    """
     def __init__(self):
         self.nodes = []
-        self.lock = threading.Lock()
+        self.__lock = threading.Lock()
 
-hosts = HostsStruct()
+    def lock(self):
+        self.__lock.acquire()
+    
+    def unlock(self):
+        self.__lock.release()
+
+    def append(self, node):
+        self.nodes.append(node)
+
+    def dump(self):
+        for n in self.nodes:
+            n.dump()
+
+# hosts
+hosts = LockList()

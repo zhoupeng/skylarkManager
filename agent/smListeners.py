@@ -28,12 +28,12 @@ def hostlistener(listener):
         h = smHost.Host()
         h.init(connSock, addr, XENHOST)
 
-        hosts.lock.acquire()
+        hosts.lock()
         try:
             # insert into the hostlist
-            hosts.nodes.append(h)
+            hosts.append(h)
         finally:
-            hosts.lock.release()
+            hosts.unlock()
 
         h.start()
         #h.join()
