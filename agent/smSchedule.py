@@ -129,7 +129,10 @@ class Scheduler:
         @type nodes: list
         @param nodes: The list of nodes
         """
-        pass
+        nodes.sort(key = lambda n: n.latestReport['memory_dom0'] +
+                                   n.latestReport['memory_free'],
+                                   reverse = True)
+        return nodes[0]
 
     def __cpu(self, nodes):
         """ schedule by cpu 

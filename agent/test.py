@@ -14,4 +14,24 @@ if __name__ == '__main__':
     import smListeners
     hostListener = smListeners.Listener(port = 1234, type = "host")
     hostListener.start()
+
+    # test scheduler
+
+    # M_MEM
+    from smGlobals import *
+    from smSchedule import Scheduler
+    sched = Scheduler.getInstance()
+    sched.setMethod(Scheduler.M_MEM)
+    import time
+    time.sleep(60)
+    print sched.getMethod()
+    sched.schedule(hosts)
+    #print hosts
+    hosts.dump()
+    time.sleep(30)
+    print sched.getMethod()
+    sched.schedule(hosts)
+    #print hosts
+    hosts.dump()
+
     hostListener.join()
