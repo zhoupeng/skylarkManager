@@ -235,6 +235,9 @@ MEM(k) MEM(%)  MAXMEM(k) MAXMEM(%) VCPUS NETS NETTX(k) NETRX(k) VBDS   VBD_OO\
                 elif key == 'threads_per_core':
                     threads_per_core = int(val)
                     result['threads_per_core'] = threads_per_core
+                elif key == 'cpu_mhz':
+                    result['cpu_mhz'] = long(val)
+                # how to get MIPS?
 
         if (cores_per_socket is not None and
               threads_per_core is not None and nr_cpus is not None):

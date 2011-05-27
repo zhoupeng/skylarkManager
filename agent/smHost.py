@@ -75,6 +75,7 @@ class Host(threading.Thread):
                         self.__uuid = jsobj[1]['uuid']
                         self.type = jsobj[1]['type']
                         self.basicInfo.update(memory_total = jsobj[1]['memory_total'],
+                               cpu_mhz = jsobj[1]['cpu_mhz'],
                                cpu_total = jsobj[1]['cpu_total'],
                                cpu_nodes = jsobj[1]['cpu_nodes'],
                                cores_per_socket = jsobj[1]['cores_per_socket'],
