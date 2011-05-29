@@ -14,6 +14,7 @@ import smProcess as utilsProcess
 import smRetry as utilsRetry
 import smErrors as errors
 from CONSTANTS import *
+import logging
 
 class XenNode(object):
 
