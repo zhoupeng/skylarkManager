@@ -138,6 +138,9 @@ class Scheduler:
         @type nodes: list
         @param nodes: The list of nodes
         """
+        if (not nodes) or (not len(nodes)):
+            return None
+
         nodes.sort(key = lambda n: n.latestReport['memory_dom0'] +
                                    n.latestReport['memory_free'],
                                    reverse = True)
@@ -149,6 +152,9 @@ class Scheduler:
         @type nodes: list
         @param nodes: The list of nodes
         """
+        if (not nodes) or (not len(nodes)):
+            return None
+
         # FIXME: How to get MIPS effectively?
         # MIPS is more reasonable than cpu frequency.
         nodes.sort(key = lambda n: (1 - n.latestReport['cpurate'] / 100) *
