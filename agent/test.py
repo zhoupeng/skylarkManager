@@ -22,16 +22,17 @@ if __name__ == '__main__':
     from smSchedule import Scheduler
     sched = Scheduler.getInstance()
     #sched.setMethod(Scheduler.M_MEM)
-    sched.setMethod(Scheduler.M_CPU)
+    #sched.setMethod(Scheduler.M_CPU)
+    sched.setMethod(Scheduler.M_CYCLIC)
     import time
     time.sleep(60)
     print sched.getMethod()
-    sched.schedule(hosts)
+    print sched.schedule(hosts)
     #print hosts
     hosts.dump()
     time.sleep(30)
     print sched.getMethod()
-    sched.schedule(hosts)
+    print sched.schedule(hosts)
     #print hosts
     hosts.dump()
 

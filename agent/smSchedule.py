@@ -46,6 +46,7 @@ class Scheduler:
 
     __method = M_DEFAULT
     __sched_method_map = {}
+    __cyclic_index = 0
 
     def __init__(self):
 
@@ -59,6 +60,7 @@ class Scheduler:
                          Scheduler.M_DEFAULT: self.__cyclic }
 
         self.__method = Scheduler.M_DEFAULT 
+        self.__cyclic_index = 0
 
     @staticmethod
     def getInstance():
@@ -121,7 +123,14 @@ class Scheduler:
         @type nodes: list
         @param nodes: The list of nodes
         """
-        pass
+        if (not nodes) or (not len(nodes)):
+            return None
+
+        self.__cyclic_index = self.__cyclic_index % len(nodes)
+        self.__cyclic_index = self.__cyclic_index + 1
+
+        return nodes[self.__cyclic_index - 1]
+
 
     def __memory(self, nodes):
         """ schedule by mem
