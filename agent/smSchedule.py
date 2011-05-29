@@ -154,7 +154,9 @@ class Scheduler:
         @param nodes: The list of nodes
         """
 
-        pass
+        if self.__cpu(nodes):
+            return self.__memory(nodes)
+        return None
 
     def __cpu_mem(self, nodes):
         """ schedule by cpu&&mem, cpu first.
@@ -162,7 +164,10 @@ class Scheduler:
         @type nodes: list
         @param nodes: The list of nodes
         """
-        pass
+
+        if self.__memory(nodes):
+            return self.__cpu(nodes)
+        return None
 
     # Add your own sched method here
     # def __yourmethod(self, ...)
