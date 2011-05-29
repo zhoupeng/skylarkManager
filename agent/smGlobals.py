@@ -29,9 +29,10 @@ class LockList:
 
     def dump(self):
         print "Dump nodes of LockList:"
-        smDump.dumpObj(self)
-        for n in self.nodes:
-            n.dump()
+        print self.nodes
+        #smDump.dumpObj(self)
+        #for n in self.nodes:
+            #n.dump()
 
 # hosts
 hosts = LockList()
