@@ -21,7 +21,8 @@ if __name__ == '__main__':
     from smGlobals import *
     from smSchedule import Scheduler
     sched = Scheduler.getInstance()
-    sched.setMethod(Scheduler.M_MEM)
+    #sched.setMethod(Scheduler.M_MEM)
+    sched.setMethod(Scheduler.M_CPU)
     import time
     time.sleep(60)
     print sched.getMethod()

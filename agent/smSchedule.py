@@ -140,7 +140,12 @@ class Scheduler:
         @type nodes: list
         @param nodes: The list of nodes
         """
-        pass
+        # FIXME: How to get MIPS effectively?
+        # MIPS is more reasonable than cpu frequency.
+        nodes.sort(key = lambda n: (1 - n.latestReport['cpurate'] / 100) *
+                                    n.basicInfo['cpu_mhz'],
+                                    reverse = True)
+        return nodes[0]
 
     def __mem_cpu(self, nodes):
         """ schedule by men&&cpu, mem first.
