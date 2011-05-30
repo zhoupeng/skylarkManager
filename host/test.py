@@ -38,6 +38,9 @@ if __name__ == '__main__':
     #print smXen.XenNode._getXentop()
     print xennode.getCPUUsage()
 
+    # test create vm
+    print xennode.createInstance("UserVMxpPro", "192.168.1.187", 6000)
+    """
     # smNet
     import smNet
     hostname1 = smNet.getHostname()
@@ -78,4 +81,5 @@ if __name__ == '__main__':
     #h1 = smHost.Host("192.168.1.187", -1)
     print h1.joinIn()
     h1.start()
+    """
 

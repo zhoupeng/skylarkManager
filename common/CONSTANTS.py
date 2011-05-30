@@ -26,4 +26,8 @@ VTYPE_INT = 'int'
 HV_KERNEL_PATH = "/usr/lib/xen/boot/hvmloader"
 HV_DEVICE_MODEL = "/usr/lib/xen/bin/qemu-dm"
 
-HV_VM_CONFIG_PATH = "/etc/skylark/config"
+#HV_VM_CONFIG_PATH = "/etc/skylark/config"
+#HV_DISK_IMG_PATH = "/etc/skylark/imgs"
+HV_VM_CONFIG_PATH = "/home/zp/Desktop/fc8/hvm-WinXP"
+HV_DISK_IMG_PATH = "/home/zp/Desktop/fc8/hvm-WinXP"
+
