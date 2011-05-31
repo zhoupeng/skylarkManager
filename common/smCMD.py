@@ -13,8 +13,10 @@ import simplejson as json
 class CMDHostAgent:
     # host join, host <-(ack)---(req)-> agent
     join = "HOSTJOIN"
-    # resource report host <-(fetch)---(report)-> agent
+    # resource report, host <-(fetch)---(report)-> agent
     rsreport = "RSREPORT"
+    # instance requrest, agent <-(ack)---(req)-> host
+    reqinstance = "REQINSTANCE"
 
     @staticmethod
     def cmd_join(uuid, **hostmisc):
@@ -68,3 +70,34 @@ class CMDHostAgent:
         fetch = [CMDHostAgent.rsreport, {'uuid': uuid}]
 
         return json.dumps(fetch)
+
+    @staticmethod
+    def cmd_reqinstance(uuid, **reqparas):
+        """ request to create a instance.
+        agent -> host
+
+        @type uuid: str
+        @param uuid: the uuid of the host
+        @type req: dict{type}
+        @param req: request params
+        """
+        reqparas.update(uuid = uuid)
+        r = [CMDHostAgent.reqinstance, reqparas]
+
+        return json.dumps(r)
+
+    @staticmethod
+    def ack_reqinstance(uuid, **instance):
+        """ request to create a instance.
+        host -> agent
+
+        @type uuid: str
+        @param uuid: the uuid of the host
+        @type instance: dict{type, spicehost, spiceport}
+        @param instance: instance's appearance to client
+        """
+        instance.update(uuid = uuid)
+        ack = [CMDHostAgent.reqinstance, instance]
+
+        return json.dumps(ack)
+

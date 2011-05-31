@@ -95,6 +95,8 @@ class Host(threading.Thread):
                 elif jsobj[0] == CMDHostAgent.rsreport:
                     self.latestReport.update(jsobj[1])
                     print self.latestReport
+                elif jsobj[0] == CMDHostAgent.reqinstance:
+                    # TODO 
 
     def dump(self):
         smDump.dumpObj(self)

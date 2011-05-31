@@ -20,6 +20,7 @@ import simplejson as json
 import threading
 import smTimer
 from CONSTANTS import *
+from smGlobals import *
 
 class Host(object):
     """
@@ -138,5 +139,37 @@ class AgentCMDThread(threading.Thread):
         while self.host.running:
             cmd = self.host.sock.recv(512)
             if cmd:
-                print cmd
+                jsobj = json.loads(cmd)
+                
+                if jsobj[0] == CMDHostAgent.reqinstance:
+                    if self.host.getUUID() != jsobj[1]['uuid']:
+                        pass
+                        """
+                        nonIns = { "type": "",
+                                    "spicehost": "",
+                                    "spiceport": 0 }
+                        ackReqInst = CMDHostAgent.ack_reqinstance(
+                                    self.host.getUUID(), nonIns)
+                        """
+                    else:
+                        hip = smNet.Hostname.getIP("localhost")
+                        hport = get_free_port()
+                        inst = self.node.createInstance(jsobj[1]['type'], hip,
+                                                        hport)
+                        inst.type = jsobj[1]['type']
+
+                        if inst:
+                            global instances
+                            instances.lock()
+                            instances.append(inst)
+                            instances.unlock()
+
+                            ackReqInst = CMDHostAgent.ack_reqinstance(
+                                self.host.getUUID(), type = inst.type, 
+                                spicehost = hip, spiceport = hport)
+
+                            self.host.sock.send(ackReqInst)
+
+                #elif: ...
+
 
