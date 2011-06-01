@@ -101,3 +101,36 @@ class CMDHostAgent:
 
         return json.dumps(ack)
 
+class CMDClientAgent:
+    # instance requrest, client (req)-> agent
+    reqinstance = "REQINSTANCE"
+
+    @staticmethod
+    def cmd_reqinstance(type):
+        """ request to create a instance
+        client -> agent
+
+        @type type: str
+        @param type: the type of instance (e.g. winxp, word)
+        """
+        req = [CMDClientAgent.reqinstance, {'type': type}]
+        
+        return json.dumps(req)
+    @staticmethod
+    def ack_reqinstance(type, spicehost, spiceport):
+        """ response to client
+        agent -> client
+
+        @type type: str
+        @param type: the type of instance (e.g. winxp, word)
+        @type spicehost: str
+        @param spicehost: the listen ip addr of spice server
+        @type spiceport: int
+        @param spiceport: the listen port of spice server
+        """
+        req = [CMDClientAgent.reqinstance, {'type': type,
+                                            'spicehost': spicehost,
+                                            'spiceport': spiceport}]
+        
+        return json.dumps(req)
+

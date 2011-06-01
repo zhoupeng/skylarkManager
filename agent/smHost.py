@@ -15,6 +15,7 @@ from smCMD import *
 import smErrors
 import threading
 import smDump
+from smGlobals import *
 
 
 class Host(threading.Thread):
@@ -96,7 +97,26 @@ class Host(threading.Thread):
                     self.latestReport.update(jsobj[1])
                     print self.latestReport
                 elif jsobj[0] == CMDHostAgent.reqinstance:
-                    # TODO 
+                    # TODO refactoring
+                    pendingReqsFromCli.lock()
+                    n = None # n is ClientReq
+                    for n in pendingReqsFromCli.nodes:
+                        if n.type == jsobj[1]['type']:
+                            break
+
+                    if not n:
+                        continue
+
+                    # sent to n.senderaddr
+                    # remove n from pendingReqsFromCli
+                    soc = socket.socket(type = socket.SOCK_DGRAM)
+                    ackreqins = CMDClientAgent.ack_reqinstance(jsobj[1]['type'], 
+                                                               jsobj[1]['spicehost'],
+                                                               jsobj[1]['spiceport'])
+                    soc.sendto(ackreqins, n.senderaddr)
+                    pendingReqsFromCli.nodes.remove(n)
+                    pendingReqsFromCli.unlock()
+
 
     def dump(self):
         smDump.dumpObj(self)

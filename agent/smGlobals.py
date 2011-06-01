@@ -36,3 +36,6 @@ class LockList:
 
 # hosts
 hosts = LockList()
+
+# Pending reqs from clients
+pendingReqsFromCli = LockList()
