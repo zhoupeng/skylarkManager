@@ -8,13 +8,20 @@
 #  Zhou Peng <ailvpeng25@gmail.com>, 2011.04 ~
 #
 # -------------------------------------------------------------------
-
+import libconf
+from CONSTANTS import *
 if __name__ == '__main__':
 
     import smListeners
     hostListener = smListeners.Listener(port = 1234, type = "host")
     hostListener.start()
 
+    from CONSTANTS import *
+    import smClient
+    clientSrv = smClient.Client(port = CLIENTSRV_PORT, host = '192.168.1.187')
+    clientSrv.start()
+
+    """
     # test scheduler
 
     # M_MEM
@@ -35,5 +42,6 @@ if __name__ == '__main__':
     print sched.schedule(hosts)
     #print hosts
     hosts.dump()
-
+    """
     hostListener.join()
+    clientSrv.join()

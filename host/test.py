@@ -39,7 +39,9 @@ if __name__ == '__main__':
     print xennode.getCPUUsage()
 
     # test create vm
-    print xennode.createInstance("UserVMxpPro", "192.168.1.187", 6000)
+    #print xennode.createInstance("UserVMxpPro", "192.168.1.187", 6000)
+    #"""
+
     """
     # smNet
     import smNet
@@ -74,6 +76,7 @@ if __name__ == '__main__':
     jstr = '["foo", {"bar":["baz", null, 1.0, 2]}]'
     decoded = json.loads(jstr)
     print decoded[1]
+    """
 
     # smHost
     import smHost
@@ -81,5 +84,5 @@ if __name__ == '__main__':
     #h1 = smHost.Host("192.168.1.187", -1)
     print h1.joinIn()
     h1.start()
-    """
+    #"""
 

@@ -60,6 +60,9 @@ class Host(threading.Thread):
         self.addr = addr
         self.ready = True
 
+    def getUUID(self):
+        return self.__uuid
+
     # Thread function serves the host.
     def run(self):
         if (not self.ready):

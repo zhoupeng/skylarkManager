@@ -140,6 +140,7 @@ class AgentCMDThread(threading.Thread):
             cmd = self.host.sock.recv(512)
             if cmd:
                 jsobj = json.loads(cmd)
+                print "host:AgentCMDThread receive: %s" % jsobj
                 
                 if jsobj[0] == CMDHostAgent.reqinstance:
                     if self.host.getUUID() != jsobj[1]['uuid']:
@@ -152,10 +153,13 @@ class AgentCMDThread(threading.Thread):
                                     self.host.getUUID(), nonIns)
                         """
                     else:
-                        hip = smNet.Hostname.getIP("localhost")
+                        hip = smNet.Hostname.getIP("192.168.1.187")
                         hport = get_free_port()
-                        inst = self.node.createInstance(jsobj[1]['type'], hip,
+                        inst = self.host.node.createInstance(jsobj[1]['type'], hip,
                                                         hport)
+                        if not inst:
+                            print "AgentCMDThread: createInstance failed"
+
                         inst.type = jsobj[1]['type']
 
                         if inst:

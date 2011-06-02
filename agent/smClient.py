@@ -12,6 +12,8 @@ from smGlobals import *
 import threading
 import simplejson as json
 from smSchedule import Scheduler
+import socket
+from smCMD import *
 
 class ClientReq:
     """ represent a request from the client
@@ -55,7 +57,7 @@ class Client(threading.Thread):
         self.sock = socket.socket(type = socket.SOCK_DGRAM)
         self.sock.bind((self.host, self.port))
         self.running = True
-        self.sched = smSchedule.Schedule.getInstance()
+        self.sched = Scheduler.getInstance()
 
     def run(self):
         """ Thread body
@@ -75,6 +77,7 @@ class Client(threading.Thread):
                 continue
             
             jsobj = json.loads(data)
+            print "ClientSrv receive: %s" % jsobj
 
             # Add a pending req to pendingReqsFromCli queue
             clireq = ClientReq(senderaddr, jsobj[1]['type'])

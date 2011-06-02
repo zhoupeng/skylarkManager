@@ -309,6 +309,7 @@ MEM(k) MEM(%)  MAXMEM(k) MAXMEM(%) VCPUS NETS NETTX(k) NETRX(k) VBDS   VBD_OO\
         res = utilsProcess.RunCmd(["xm", "create", "%s/%s.cfg" % 
                                   (HV_VM_CONFIG_PATH, vmName)])
         if res.failed:
+            print "xm create fals, reason:%s" % res.fail_reason
             return None
         
         ins = smObjects.Instance(vmName, spicehost, spiceport)
