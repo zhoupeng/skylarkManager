@@ -21,6 +21,7 @@ import threading
 import smTimer
 from CONSTANTS import *
 from smGlobals import *
+import smObjects
 
 class Host(object):
     """
@@ -157,10 +158,6 @@ class AgentCMDThread(threading.Thread):
                         hport = get_free_port()
                         inst = self.host.node.createInstance(jsobj[1]['type'], hip,
                                                         hport)
-                        if not inst:
-                            print "AgentCMDThread: createInstance failed"
-
-                        inst.type = jsobj[1]['type']
 
                         if inst:
                             global instances
@@ -168,11 +165,18 @@ class AgentCMDThread(threading.Thread):
                             instances.append(inst)
                             instances.unlock()
 
-                            ackReqInst = CMDHostAgent.ack_reqinstance(
-                                self.host.getUUID(), type = inst.type, 
-                                spicehost = hip, spiceport = hport)
+                        if not inst:
+                            print "AgentCMDThread: createInstance failed"
+                            inst = smObjects.Instance(name = "None", spicehost = "", 
+                                                spiceport = 0, type = jsobj[1]['type'])
 
-                            self.host.sock.send(ackReqInst)
+                        inst.type = jsobj[1]['type']
+
+                        ackReqInst = CMDHostAgent.ack_reqinstance(
+                            self.host.getUUID(), type = inst.type, 
+                            spicehost = inst.spicehost, spiceport = inst.spiceport)
+
+                        self.host.sock.send(ackReqInst)
 
                 #elif: ...
 
