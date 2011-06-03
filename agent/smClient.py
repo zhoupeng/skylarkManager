@@ -75,8 +75,14 @@ class Client(threading.Thread):
 
             if not data:
                 continue
-            
-            jsobj = json.loads(data)
+
+            # If the received json is in syntax err, continue.
+            try:
+                jsobj = json.loads(data)
+            except JSONDecodeError, e:
+                print e
+                continue
+
             print "ClientSrv receive: %s" % jsobj
 
             # Add a pending req to pendingReqsFromCli queue
