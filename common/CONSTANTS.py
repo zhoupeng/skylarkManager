@@ -9,30 +9,15 @@
 #
 # -------------------------------------------------------------------
 from smSettings import *
-"""
-# host types
-XENHOST = "xen"
-KVMHOST = "kvm"
 
 # How long to report host resource once
-RS_REPORT_INTERVAL = 30
+RS_REPORT_INTERVAL = 30 # seconds
 
-VTYPE_STRING = 'string'
-VTYPE_MAYBE_STRING = "maybe-string"
-VTYPE_BOOL = 'bool'
-VTYPE_SIZE = 'size' # size, in MiBs
-VTYPE_INT = 'int'
+# host types
+XEN_TYPE = 'xen'
+KVM_TYPE = 'kvm'
 
-# HV parameter names (global namespace)
-HV_KERNEL_PATH = "/usr/lib/xen/boot/hvmloader"
-HV_DEVICE_MODEL = "/usr/lib/xen/bin/qemu-dm"
-
-#HV_VM_CONFIG_PATH = "/etc/skylark/config"
-#HV_DISK_IMG_PATH = "/etc/skylark/imgs"
-HV_VM_CONFIG_PATH = "/home/zp/Desktop/fc8/hvm-WinXP"
-HV_DISK_IMG_PATH = "/home/zp/Desktop/fc8/hvm-WinXP"
-
-# Famous ports
-CLIENTSRV_PORT = 5990
-MASTER_AGENT_PORT = 5991
-"""
+# spice
+SPICE_HOST = 'localhost' # or ip interface, e.g. 192.168.1.187
+SPICE_BASE_PORT = 6200 # port is local to the host
+SPICE_PORT_RANGE = 5000

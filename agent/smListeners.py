@@ -26,7 +26,7 @@ def hostlistener(listener):
         connSock, addr = listener.sock.accept()
 
         h = smHost.Host()
-        h.init(connSock, addr, XENHOST)
+        h.init(connSock, addr, XEN_TYPE)
 
         hosts.lock()
         try:

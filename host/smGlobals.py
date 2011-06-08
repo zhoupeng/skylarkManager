@@ -8,8 +8,11 @@
 #  Zhou Peng <ailvpeng25@gmail.com>, 2011.06 ~
 #
 # -------------------------------------------------------------------
+import libconf
+
 import threading
 import smDump
+from CONSTANTS import *
 
 class LockList:
     """ Wraper of List with lock
@@ -37,7 +40,7 @@ class LockList:
 # instances
 instances = LockList()
 
-spice_base_port = 6000
+spice_base_port = SPICE_BASE_PORT
 def get_free_port():
     global spice_base_port
     spice_base_port = spice_base_port + 1

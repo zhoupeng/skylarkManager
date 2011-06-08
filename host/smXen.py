@@ -26,7 +26,7 @@ class XenNode(object):
         pass
 
     def getType(self):
-        return XENHOST
+        return XEN_TYPE
 
     def getCPUUsage(self):
         xentop = self._getXentop()

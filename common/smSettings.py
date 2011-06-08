@@ -1,6 +1,6 @@
 #
 #
-# Filename: common/settings.py
+# Filename: common/smSettings.py
 #
 # -------------------------------------------------------------------
 #
@@ -14,19 +14,9 @@ according to the real system deployment.
 """
 
 # host types
-XENHOST = "xen"
-KVMHOST = "kvm"
+HOST_TYPE = "xen" # "kvm", "xen"
 
-# How long to report host resource once
-RS_REPORT_INTERVAL = 30
-
-VTYPE_STRING = 'string'
-VTYPE_MAYBE_STRING = "maybe-string"
-VTYPE_BOOL = 'bool'
-VTYPE_SIZE = 'size' # size, in MiBs
-VTYPE_INT = 'int'
-
-# HV parameter names (global namespace)
+# HV parameter names
 HV_KERNEL_PATH = "/usr/lib/xen/boot/hvmloader"
 HV_DEVICE_MODEL = "/usr/lib/xen/bin/qemu-dm"
 
@@ -36,9 +26,13 @@ HV_VM_CONFIG_PATH = "/home/zp/Desktop/fc8/hvm-WinXP"
 HV_DISK_IMG_PATH = "/home/zp/Desktop/fc8/hvm-WinXP"
 
 # Famous ports
-CLIENTSRV_PORT = 5990
-MASTER_AGENT_PORT = 5991
+CLIENTSRV_PORT = 6000
+MASTER_AGENT_PORT = 6001
 
 # Well known host interface
+CLIENTSRV_HOST = '192.168.1.187'
+MASTER_AGENT_HOST = '192.168.1.187'
 
-# WEB_FRONT_URL = ''
+# used by Agent to query info from (send req to) the webfront if necessary
+WEB_FRONT_URL = 'http://192.168.1.187:8000'
+

@@ -154,7 +154,7 @@ class AgentCMDThread(threading.Thread):
                                     self.host.getUUID(), nonIns)
                         """
                     else:
-                        hip = smNet.Hostname.getIP("192.168.1.187")
+                        hip = smNet.Hostname.getIP(SPICE_HOST)
                         hport = get_free_port()
                         inst = self.host.node.createInstance(jsobj[1]['type'], hip,
                                                         hport)

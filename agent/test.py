@@ -18,7 +18,7 @@ if __name__ == '__main__':
 
     from CONSTANTS import *
     import smClient
-    clientSrv = smClient.Client(port = CLIENTSRV_PORT, host = '192.168.1.187')
+    clientSrv = smClient.Client(port = CLIENTSRV_PORT, host = CLIENTSRV_HOST)
     clientSrv.start()
 
     """
