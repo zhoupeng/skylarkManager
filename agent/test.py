@@ -13,7 +13,7 @@ from CONSTANTS import *
 if __name__ == '__main__':
 
     import smListeners
-    hostListener = smListeners.Listener(port = 1234, type = "host")
+    hostListener = smListeners.Listener(port = MASTER_AGENT_PORT, type = "host")
     hostListener.start()
 
     from CONSTANTS import *

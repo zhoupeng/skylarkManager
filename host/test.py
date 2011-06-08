@@ -80,7 +80,8 @@ if __name__ == '__main__':
 
     # smHost
     import smHost
-    h1 = smHost.Host("192.168.1.187", 1234)
+    from CONSTANTS import *
+    h1 = smHost.Host("192.168.1.187", MASTER_AGENT_PORT)
     #h1 = smHost.Host("192.168.1.187", -1)
     print h1.joinIn()
     h1.start()

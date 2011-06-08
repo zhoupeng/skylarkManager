@@ -1,15 +1,18 @@
-#!/usr/bin/env python
 #
-# Filename: common/CONSTANTS.py
+#
+# Filename: common/settings.py
 #
 # -------------------------------------------------------------------
 #
 # Author:
-#  Zhou Peng <ailvpeng25@gmail.com>, 2011.04 ~
+#  Zhou Peng <ailvpeng25@gmail.com>, 2011.06 ~
 #
 # -------------------------------------------------------------------
-from smSettings import *
+
+""" This is the configuration file, user should modify the fields,
+according to the real system deployment.
 """
+
 # host types
 XENHOST = "xen"
 KVMHOST = "kvm"
@@ -35,4 +38,7 @@ HV_DISK_IMG_PATH = "/home/zp/Desktop/fc8/hvm-WinXP"
 # Famous ports
 CLIENTSRV_PORT = 5990
 MASTER_AGENT_PORT = 5991
-"""
+
+# Well known host interface
+
+# WEB_FRONT_URL = ''
