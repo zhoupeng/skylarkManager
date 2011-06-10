@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 # 02110-1301, USA.
 
-# import into skylark by Zhou Peng <ailvpeng25@gmail.com> in 2011.04
+# Copyright (C) 2011 Zhou Peng <ailvpeng25@gmail.com>.
 
 """Network utility module.
 
@@ -30,6 +30,10 @@ import re
 import socket
 
 import smErrors as errors
+
+import fcntl
+import struct
+import smLog
 
 def getHostname(name=None, family=None):
   """Returns a Hostname object.
@@ -208,6 +212,8 @@ class IPAddress(object):
   family = None
   loopback_cidr = None
 
+  SIOCGIFADDR = 0x8915
+
   @staticmethod
   def _getIPIntFromString(address):
     """Abstract method to please pylint.
@@ -342,6 +348,32 @@ class IPAddress(object):
       return cls.inNetwork(cls.loopback_cidr, address) # loopback_cidr
     except errors.IPAddressError:
       return False
+
+  @classmethod
+  def get_ip_address_nic(cls, ifname):
+    """Get the ip address associated with a network interface (Linux only)
+
+    @type ifname: str
+    @param ifname: the name of given network interface card
+    @return: ASCII string of ip addr in dotted decimal notation
+    """
+
+    soc = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    request = IPAddress.SIOCGIFADDR
+
+    try:
+      ifreq = struct.pack('256s', ifname[:16])
+    except TypeError, te:
+      print "Err:%s:%s: %s" % (__file__, smLog.__function__(), te)
+      return None
+
+    try:
+      info = fcntl.ioctl(soc.fileno(), request, ifreq)
+    except IOError, ioerr:
+      print "Err:%s:%s: %s" % (__file__, smLog.__function__(), ioerr)
+      return None
+
+    return socket.inet_ntoa(info[20:24])
 
 
 class IP4Address(IPAddress):
