@@ -16,9 +16,13 @@ import smList
 # instances
 instances = smList.LockList()
 
-spice_base_port = SPICE_BASE_PORT
-def get_free_port():
-    global spice_base_port
-    spice_base_port = spice_base_port + 1
-    return spice_base_port - 1
+spice_port_current = SPICE_BASE_PORT
+def get_free_port4spice():
+    global spice_port_current
+
+    if not spice_port_current % (SPICE_BASE_PORT + SPICE_PORT_RANGE + 1):
+        spice_port_current = SPICE_BASE_PORT
+
+    spice_port_current += 1
+    return spice_port_current - 1
 

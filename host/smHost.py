@@ -163,7 +163,7 @@ class AgentCMDThread(threading.Thread):
                             smLog.__function__())
                             sys.exit()
 
-                        hport = get_free_port()
+                        hport = get_free_port4spice()
                         inst = self.host.node.createInstance(jsobj[1]['type'], hip,
                                                         hport)
 

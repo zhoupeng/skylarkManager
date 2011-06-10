@@ -25,6 +25,14 @@ HV_DEVICE_MODEL = "/usr/lib/xen/bin/qemu-dm"
 HV_VM_CONFIG_PATH = "/home/zp/Desktop/fc8/hvm-WinXP"
 HV_DISK_IMG_PATH = "/home/zp/Desktop/fc8/hvm-WinXP"
 
+#
+# NB: Port N.O. allocation
+#
+# 5900-5999 reserved for VNC
+# 6000-6199 reserved for famous port(by server)
+# 6200-11200 reserved for spice
+#
+
 # Famous ports
 CLIENTSRV_PORT = 6000
 MASTER_AGENT_PORT = 6001
