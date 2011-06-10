@@ -22,6 +22,8 @@ import smTimer
 from CONSTANTS import *
 from smGlobals import *
 import smObjects
+import smLog
+import sys
 
 class Host(object):
     """
@@ -154,7 +156,13 @@ class AgentCMDThread(threading.Thread):
                                     self.host.getUUID(), nonIns)
                         """
                     else:
-                        hip = smNet.Hostname.getIP(SPICE_HOST)
+                        hip = smNet.IPAddress.get_ip_address_nic(SPICE_NI)
+
+                        if not hip:
+                            print "Fail to get ip of NI(%s):%s:%s" % (SPICE_NI, __file__,
+                            smLog.__function__())
+                            sys.exit()
+
                         hport = get_free_port()
                         inst = self.host.node.createInstance(jsobj[1]['type'], hip,
                                                         hport)

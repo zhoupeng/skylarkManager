@@ -36,3 +36,6 @@ MASTER_AGENT_HOST = '192.168.1.187'
 # used by Agent to query info from (send req to) the webfront if necessary
 WEB_FRONT_URL = 'http://192.168.1.187:8000'
 
+# NICs
+# NI to use for spice server on host
+SPICE_NI = 'eth0' # 'lo', 'ethx'

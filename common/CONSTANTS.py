@@ -18,6 +18,5 @@ XEN_TYPE = 'xen'
 KVM_TYPE = 'kvm'
 
 # spice
-SPICE_HOST = 'localhost' # or ip interface, e.g. 192.168.1.187
 SPICE_BASE_PORT = 6200 # port is local to the host
 SPICE_PORT_RANGE = 5000
