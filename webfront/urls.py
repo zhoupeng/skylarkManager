@@ -1,4 +1,6 @@
 from django.conf.urls.defaults import patterns, include, url
+import vApp.urls
+import vApp.views
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -14,4 +16,5 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
+     url(r'^vappreq$', vApp.views.vAppReq),
 )
