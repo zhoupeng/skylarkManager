@@ -16,5 +16,9 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
+
+    # testing through web
+     url(r'^webtester$', 'django.views.generic.simple.direct_to_template', {'template': 'webtester.html'}),
+
      url(r'^vappreq$', vApp.views.vAppReq),
 )
