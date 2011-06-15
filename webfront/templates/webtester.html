@@ -1,55 +1,25 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us"><head>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
 
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<head>
+  <title> SkylarkManager Tester </title>
+</head>
 
+<body>
 
-<title> SkylarkManager Tester </title>
+  <h1 id="site-name"> Tester for send reqs </h1>
 
-<meta name="robots" content="NONE,NOARCHIVE">
-</head><body class="login">
-
-<!-- Container -->
-<div id="container">
-
-    
-    <!-- Header -->
-    <div id="header">
-        <div id="branding">
-        
-<h1 id="site-name"> Tester for send reqs </h1>
-
-        </div>
-        
-        
+  <form method="post" id="request-form">
+    <div>
+      <label for="CMD">Request:</label> <input id="id_cmd" name="CMD" maxlength="30" type="text">
     </div>
-    <!-- END Header -->
-    
-    
-
-        
-
-    <!-- Content -->
-    <div id="content" class="colM">
-        
-        
-        
-
-
-
-
-<div id="content-main">
-<form method="post" id="login-form"><div style="display: none;"><input name="csrfmiddlewaretoken" value="b7b49bf2ad08daff72d1d7ac8c8cdabd" type="hidden"></div>
-  <div class="form-row">
-    <label for="CMD" class="required">Request:</label> <input id="id_cmd" name="CMD" maxlength="30" type="text">
-  </div>
-  <div class="form-row">
-    <label for="TYPE" class="required">Type:</label> <input id="TYPE" name="TYPE" maxlength="30" type="text">
-  </div>
-  <div class="submit-row">
-    <label>&nbsp;</label><input value="SEND" type="submit" onclick="vappreq(this.form)">
-  </div>
-</form>
+    <div>
+      <label for="TYPE">Type:</label> <input id="TYPE" name="TYPE" maxlength="30" type="text">
+    </div>
+    <div>
+      <label>&nbsp;</label><input value="Send" type="submit" onclick="vappreq(this.form)">
+    </div>
+  </form>
 
 <script type="text/javascript">
 function vappreq(form) {
@@ -57,8 +27,8 @@ function vappreq(form) {
     form.submit();
     return true;
 }
-
 </script>
-<!-- END Container -->
 
-</body></html>
+</body>
+
+</html>
