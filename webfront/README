@@ -1,0 +1,11 @@
+= accounts =
+Provide services related with account. The reqs to accounts can be fulfiled in the webfront,
+that is the reqs don't need to be delivered to the agent.
+  This module provide accounts web api, the entry point is '/api/accounts'
+
+= vApp =
+
+= fileman =
+File manager
+
+= management =
