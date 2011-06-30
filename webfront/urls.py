@@ -1,6 +1,7 @@
 from django.conf.urls.defaults import patterns, include, url
 import vApp.urls
 import vApp.views
+import accounts.account
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -21,4 +22,5 @@ urlpatterns = patterns('',
      url(r'^webtester$', 'django.views.generic.simple.direct_to_template', {'template': 'webtester.html'}),
 
      url(r'^vappreq$', vApp.views.vAppReq),
+     url(r'^api/accounts$', accounts.account.api_account),
 )
