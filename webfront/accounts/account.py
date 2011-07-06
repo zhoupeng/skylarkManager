@@ -8,6 +8,8 @@
 #  Zhou Peng <ailvpeng25@gmail.com>, 2011.06 ~
 #
 # -------------------------------------------------------------------
+import libconf
+
 from django.utils import simplejson as json
 from django.http import HttpResponse
 
@@ -19,6 +21,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 
 from WSAccount import *
+
+from smTypes import *
 
 @csrf_exempt
 def api_account(request):
@@ -51,13 +55,13 @@ def api_account(request):
     if cmd not in [CMDAccount.userlogin, CMDAccount.userlogout,
                    CMDAccount.myapplist, CMDAccount.allapplist,
                    CMDAccount.userregister, CMDAccount.userunregister]:    
-        jsstr = CMDAccount.ack_generalResp(CMDAccount.FAIL, "Invalid WebAPI")
+        jsstr = CMDAccount.ack_generalResp(Status.FAIL, "Invalid WebAPI")
         return HttpResponse(jsstr, mimetype = 'application/json')
 
     if cmd not in [CMDAccount.userregister, CMDAccount.userlogin]:
         if not request.user.is_authenticated():
             # Limiting these access to logged-in users
-            jsstr = CMDAccount.ack_generalResp(CMDAccount.FAIL, "login first")
+            jsstr = CMDAccount.ack_generalResp(Status.FAIL, "login first")
             return HttpResponse(jsstr, mimetype = 'application/json')
 
     if cmd == CMDAccount.userregister:
@@ -78,9 +82,9 @@ def login(request, uname, passwd):
     """
 
     if not uname:
-        return CMDAccount.ack_login(CMDAccount.FAIL, "user name can't be empty")
+        return CMDAccount.ack_login(Status.FAIL, "user name can't be empty")
     if not passwd:
-        return CMDAccount.ack_login(CMDAccount.FAIL, "password can't be empty.")
+        return CMDAccount.ack_login(Status.FAIL, "password can't be empty.")
 
     user = auth.authenticate(username = uname, password = passwd)
     if user is not None:
@@ -91,15 +95,15 @@ def login(request, uname, passwd):
             # It's a valid user
             auth.login(request, user) #
             # login success
-            return CMDAccount.ack_login(CMDAccount.SUCCESS,
+            return CMDAccount.ack_login(Status.SUCCESS,
                                     "authentication successfully")
         else:
             # the user is inactive
-            return CMDAccount.ack_login(CMDAccount.FAIL,
+            return CMDAccount.ack_login(Status.FAIL,
                                     "disabled account")
     else:
         # Incorrect username or passwd
-        return CMDAccount.ack_login(CMDAccount.FAIL,
+        return CMDAccount.ack_login(Status.FAIL,
                                     "invalid user name or password")
 
 def logout(request):
@@ -110,21 +114,21 @@ def logout(request):
     object that contains metadata about the request.
     """
     auth.logout(request)
-    return CMDAccount.ack_logout(CMDAccount.SUCCESS, "logout successfully")
+    return CMDAccount.ack_logout(Status.SUCCESS, "logout successfully")
 
 def register(username, passwd):
     """User request to register as a valid account.
     """
     if not username:
-        return CMDAccount.ack_register(CMDAccount.FAIL,
+        return CMDAccount.ack_register(Status.FAIL,
                                        "user name can't be empty")
     if not passwd:
-        return CMDAccount.ack_register(CMDAccount.FAIL,
+        return CMDAccount.ack_register(Status.FAIL,
                                        "password can't be empty.")
     
     try:
         user = auth.models.User.objects.get(username = username)
-        return CMDAccount.ack_register(CMDAccount.FAIL,
+        return CMDAccount.ack_register(Status.FAIL,
                                        "user %s exists." % username)
     except auth.models.User.DoesNotExist:
         user = auth.models.User.objects.create_user(username = username,
@@ -133,10 +137,10 @@ def register(username, passwd):
         # TODO. initial permission
         #user.user_permissions.add(...)
         user.save()
-        return CMDAccount.ack_register(CMDAccount.SUCCESS,
+        return CMDAccount.ack_register(Status.SUCCESS,
                                        "register successfully")
     except auth.models.User.MultipleObjectsReturned:
-        return CMDAccount.ack_register(CMDAccount.FAIL,
+        return CMDAccount.ack_register(Status.FAIL,
                               "internal err: multiple %s exist" % username)
 
 def unRegister(username, passwd):
@@ -148,9 +152,9 @@ def unRegister(username, passwd):
         user.groups.clear()
         user.user_permissions.clear()
         user.save()
-        return CMDAccount.ack_unRegister(CMDAccount.SUCCESS, "successfully")
+        return CMDAccount.ack_unRegister(Status.SUCCESS, "successfully")
     else:
-        return CMDAccount.ack_unRegister(CMDAccount.FAIL,
+        return CMDAccount.ack_unRegister(Status.FAIL,
                                     "invalid user name or password")
 
 

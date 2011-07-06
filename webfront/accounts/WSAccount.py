@@ -25,10 +25,6 @@ class CMDAccount:
     userunregister = "USERUNREGISTER"
     generalresp = "GENERALRESP"
 
-    # const value
-    SUCCESS = "success"
-    FAIL    = "fail"
-
 
     @staticmethod
     def api_login(username, passwd):
