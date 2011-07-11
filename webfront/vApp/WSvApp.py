@@ -31,6 +31,7 @@ class CMDvApp:
 
     # commands
     reqinstance = "REQINSTANCE"
+    createimage = "CREATEIMAGE"
     createinstance = "CREATEINSTANCE"
     releaseinstance = "RELEASEINSTANCE"
     startinstance = "STARTINSTANCE"
@@ -81,9 +82,42 @@ class CMDvApp:
         return ack
 
     @staticmethod
-    def api_createInstance(username, passwd, type):
+    def api_createImage(username, passwd, type):
         """Alloc necessary resource for an instance, without launching it.
         Reserved.
+ 
+        @type username: str
+        @param username: user name
+        @type passwd: str
+        @param passwd: password
+        @type type: str
+        @param type: the type of the instance
+        """
+        req = [CMDvApp.createimage, {'username': username,
+                                     'passwd': passwd,
+                                     'type': type}]
+        return json.dumps(req)
+
+    @staticmethod
+    def ack_createImage(status, msg, imageid):
+        """Response to createImage request
+        Reserved
+
+        @type status: str
+        @param status: success or fail(SUCCESS, FAIL)
+        @type msg: str
+        @param msg: detailed describtion
+        @type imageid: str
+        @param imageid: the id of the image
+        """
+        ack = [CMDvApp.createimage, {'status': status,
+                                     'msg': msg
+                                     'imageid': imageid}]
+        return json.dumps(ack)
+
+    @staticmethod
+    def api_createInstance(username, passwd, type):
+        """Create an instance.
  
         @type username: str
         @param username: user name
