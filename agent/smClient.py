@@ -16,27 +16,28 @@ import socket
 from smCMD import *
 
 class ClientReq:
-    """ represent a request from the client
+    """ represent a request from the webfront client
     """
 
     # TODO
-    # extend the type param
     # add management interface
 
-    def __init__(self, senderaddr, type):
-        """ need to rewrite to describe more complicated req.
+    def __init__(self, senderaddr, request):
+        """ The requester's address and request
+        
         @type senderaddr: tuple
         @param senderaddr: (host, port)
-        @type type: str
-        @param type: instance type, used temporarily, need to be modified
+        @type request: python object to present a request
+        @param request: request cmd and releated parameters, for detail
+        of request, pls see common/smCMD.CMDClientAgent 
         """
         self.senderaddr = senderaddr
-        self.type = type
+        self.request = request
 
 class Client(threading.Thread):
     """ Deal with all the reqs from the clients.
     Client reqs here are authenticated by the webfront,
-    so the comming reqs are assumed valid.
+    so the coming reqs are assumed valid.
 
     The work of this class:
     1) This class receive req from client routing from the webfront,
@@ -71,7 +72,7 @@ class Client(threading.Thread):
             # where string is a string representing the data received and
             # address is the address of the socket sending the data.
             # here is (host, port)
-            data, senderaddr = self.sock.recvfrom(512)
+            data, senderaddr = self.sock.recvfrom(1024)
 
             if not data:
                 continue
@@ -81,12 +82,13 @@ class Client(threading.Thread):
                 jsobj = json.loads(data)
             except JSONDecodeError, e:
                 print e
+                print "ClientSrv receive: %s" % data
                 continue
 
             print "ClientSrv receive: %s" % jsobj
 
             # Add a pending req to pendingReqsFromCli queue
-            clireq = ClientReq(senderaddr, jsobj[1]['type'])
+            clireq = ClientReq(senderaddr, jsobj)
             pendingReqsFromCli.lock()
             pendingReqsFromCli.append(clireq)
             pendingReqsFromCli.unlock()

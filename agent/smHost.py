@@ -104,8 +104,9 @@ class Host(threading.Thread):
                     pendingReqsFromCli.lock()
                     n = None # n is ClientReq
                     for n in pendingReqsFromCli.nodes:
-                        if n.type == jsobj[1]['type']:
-                            break
+                        if n.request[0] == jsobj[0]:
+                            if n.request[1]['type'] == jsobj[1]['type']:
+                                break
 
                     if not n:
                         continue
