@@ -24,6 +24,7 @@ from smGlobals import *
 import smObjects
 import smLog
 import sys
+from smTypes import *
 
 class Host(object):
     """
@@ -145,16 +146,10 @@ class AgentCMDThread(threading.Thread):
                 jsobj = json.loads(cmd)
                 print "host:AgentCMDThread receive: %s" % jsobj
                 
-                if jsobj[0] == CMDHostAgent.reqinstance:
+                if jsobj[0] == CMDHostAgent.createinstance:
                     if self.host.getUUID() != jsobj[1]['uuid']:
-                        pass
-                        """
-                        nonIns = { "type": "",
-                                    "spicehost": "",
-                                    "spiceport": 0 }
-                        ackReqInst = CMDHostAgent.ack_reqinstance(
-                                    self.host.getUUID(), nonIns)
-                        """
+                        # ignore reqs shouldn't to me
+                        continue 
                     else:
                         hip = smNet.IPAddress.get_ip_address_nic(SPICE_NI)
 
@@ -164,27 +159,48 @@ class AgentCMDThread(threading.Thread):
                             sys.exit()
 
                         hport = get_free_port4spice()
-                        inst = self.host.node.createInstance(jsobj[1]['type'], hip,
+                        # The format of instanceid(vm name) here are only useful
+                        # to our storage system to share a single disk img
+                        # file by @type, otherwise it only need to keep unique
+                        # The order puting 'type' at the end to help our
+                        # storage system to access in convenience.
+                        instanceid = jsobj[1]['owner'] + jsobj[1]['nth']
+                                     + '@' + jsobj[1]['type']
+
+                        inst = self.host.node.createInstance(instanceid, hip,
                                                         hport)
 
+                        ackcreateins = None
                         if inst:
                             global instances
+                            inst.owner = jsobj[1]['owner']
+                            inst.type = jsobj[1]['type']
+                            inst.nth = jsobj[1]['nth']
                             instances.lock()
                             instances.append(inst)
                             instances.unlock()
-
-                        if not inst:
+                            ackcreateins = CMDHostAgent.ack_createInstance(
+                                         self.host.getUUID(),
+                                         status = Status.SUCCESS,
+                                         msg = 'create an instance successfully',
+                                         owner = inst.owner,
+                                         type = inst.type,
+                                         nth = inst.nth,
+                                         spicehost = inst.spicehost,
+                                         spiceport = inst.spiceport)
+                        else:
                             print "AgentCMDThread: createInstance failed"
-                            inst = smObjects.Instance(name = "None", spicehost = "", 
-                                                spiceport = 0, type = jsobj[1]['type'])
+                            ackcreateins = CMDHostAgent.ack_createInstance(
+                                           self.host.getUUID(),
+                                           status = Status.FAIL,
+                                           msg = 'failed to create an instance',
+                                           owner = jsobj[1]['owner'],
+                                           type = jsobj[1]['type'],
+                                           nth = jsobj[1]['nth'],
+                                           spicehost = '',
+                                           spiceport = 0)
 
-                        inst.type = jsobj[1]['type']
-
-                        ackReqInst = CMDHostAgent.ack_reqinstance(
-                            self.host.getUUID(), type = inst.type, 
-                            spicehost = inst.spicehost, spiceport = inst.spiceport)
-
-                        self.host.sock.send(ackReqInst)
+                        self.host.sock.send(ackcreateins)
 
                 #elif: ...
 

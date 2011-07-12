@@ -99,14 +99,16 @@ class Host(threading.Thread):
                 elif jsobj[0] == CMDHostAgent.rsreport:
                     self.latestReport.update(jsobj[1])
                     print self.latestReport
-                elif jsobj[0] == CMDHostAgent.reqinstance:
+                elif jsobj[0] == CMDHostAgent.createinstance:
                     # TODO refactoring
                     pendingReqsFromCli.lock()
                     n = None # n is ClientReq
                     for n in pendingReqsFromCli.nodes:
                         if n.request[0] == jsobj[0]:
-                            if n.request[1]['type'] == jsobj[1]['type']:
-                                break
+                            if n.request[1]['owner'] == jsobj[1]['owner']:
+                                if n.request[1]['type'] == jsobj[1]['type']:
+                                    if n.request[1]['nth'] == jsobj[1]['nth']:
+                                        break
 
                     if not n:
                         continue
@@ -114,10 +116,14 @@ class Host(threading.Thread):
                     # sent to n.senderaddr
                     # remove n from pendingReqsFromCli
                     soc = socket.socket(type = socket.SOCK_DGRAM)
-                    ackreqins = CMDClientAgent.ack_reqinstance(jsobj[1]['type'], 
+                    instanceid = jsobj[1]['owner'] + jsobj[1]['type']
+                                 + jsobj[1]['nth']
+                    ackcreateins = CMDClientAgent.ack_createInstance(jsobj[1]['status'],
+                                                               jsobj[1]['msg'], 
+                                                               instanceid,
                                                                jsobj[1]['spicehost'],
                                                                jsobj[1]['spiceport'])
-                    soc.sendto(ackreqins, n.senderaddr)
+                    soc.sendto(ackcreateins, n.senderaddr)
                     pendingReqsFromCli.nodes.remove(n)
                     pendingReqsFromCli.unlock()
 

@@ -93,14 +93,17 @@ class Client(threading.Thread):
             pendingReqsFromCli.append(clireq)
             pendingReqsFromCli.unlock()
 
-            if jsobj[0] == CMDClientAgent.reqinstance:
+            if jsobj[0] == CMDClientAgent.createinstance:
                 h = self.sched.schedule(hosts)
 
                 if not h:
                     print "Client: error, scheded h is None"
                     continue
 
-                reqins2host = CMDHostAgent.cmd_reqinstance(h.getUUID(),
-                                                           type = clireq.type)
-                h.sock.send(reqins2host)
+                req2host = CMDHostAgent.cmd_createInstance(h.getUUID(),
+                                                              jsobj[1]['user'],
+                                                              jsobj[1]['type'],
+                                                              jsobj[1]['nth'])
+                h.sock.send(req2host)
+
 

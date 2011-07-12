@@ -15,8 +15,8 @@ class CMDHostAgent:
     join = "HOSTJOIN"
     # resource report, host <-(fetch)---(report)-> agent
     rsreport = "RSREPORT"
-    # instance requrest, agent <-(ack)---(req)-> host
-    reqinstance = "REQINSTANCE"
+    # instance creating, agent <-(ack)---(req)-> host
+    createinstance = CMDClientAgent.createinstance
 
     @staticmethod
     def cmd_join(uuid, **hostmisc):
@@ -72,65 +72,97 @@ class CMDHostAgent:
         return json.dumps(fetch)
 
     @staticmethod
-    def cmd_reqinstance(uuid, **reqparas):
-        """ request to create a instance.
+    def cmd_createInstance(uuid, owner, type, nth):
+        """ request to create an instance.
         agent -> host
+
+        In fact, we use 'owner type nth' to construct the 
+        unique name for an instance,
+        we don't take care user info except in webfront.
 
         @type uuid: str
         @param uuid: the uuid of the host
-        @type req: dict{type}
-        @param req: request params
+        @type owner: str
+        @param owner: the owner of this instance
+        @type type: str
+        @params type: the type of this instance(winxp, word ...)
+        @type nth: str
+        @params nth: how many now (0, 1, ...)
         """
-        reqparas.update(uuid = uuid)
-        r = [CMDHostAgent.reqinstance, reqparas]
+        r = [CMDHostAgent.createinstance, {'uuid': uuid,
+                                           'owner': owner,
+                                           'type': type,
+                                           'nth': nth}]
 
         return json.dumps(r)
 
     @staticmethod
-    def ack_reqinstance(uuid, **instance):
-        """ request to create a instance.
+    def ack_createInstance(uuid, **instance):
+        """ ack to request to create an instance.
         host -> agent
 
         @type uuid: str
         @param uuid: the uuid of the host
-        @type instance: dict{type, spicehost, spiceport}
+        @type instance: dict{status, msg, owner, type, nth, spicehost, spiceport}
         @param instance: instance's appearance to client
         """
         instance.update(uuid = uuid)
-        ack = [CMDHostAgent.reqinstance, instance]
+        ack = [CMDHostAgent.createinstance, instance]
 
         return json.dumps(ack)
 
 class CMDClientAgent:
     # instance requrest, client (req)-> agent
-    reqinstance = "REQINSTANCE"
+    createinstance = "CREATEINSTANCE"
+    releaseinstance = "RELEASEINSTANCE"
+    saveinstance = "SAVEINSTANCE"
+    restoreinstance = "RESTOREINSTANCE"
+    startinstance = "STARTINSTANCE"
+    shutdowninstance = "SHUTDOWNINSTANCE"
+    getinstanceinfo = "GETINSTANCEINFO"
 
     @staticmethod
-    def cmd_reqinstance(type):
-        """ request to create a instance
-        client -> agent
+    def cmd_createInstance(owner, type, nth = "0"):
+        """Request to create an instance
+        webfront client -> agent
+        You don't need to take care of the meaning of
+        owner, type and nth in fact, they are used to
+        define the vm/instance's name(instanceid).
 
+        @type owner: str
+        @param owner: the owner of vm
         @type type: str
         @param type: the type of instance (e.g. winxp, word)
+        @type nth: str
+        @param nth: how many now?
         """
-        req = [CMDClientAgent.reqinstance, {'type': type}]
-        
+        req = [CMDClientAgent.createinstance, {'owner': owner,
+                                               'type': type,
+                                               'nth': nth}]
         return json.dumps(req)
-    @staticmethod
-    def ack_reqinstance(type, spicehost, spiceport):
-        """ response to client
-        agent -> client
 
-        @type type: str
-        @param type: the type of instance (e.g. winxp, word)
+    @staticmethod
+    def ack_createInstance(status, msg, instanceid, spicehost, spiceport):
+        """ Response to webfront client
+       
+        @type status: str
+        @param status: success or fail(SUCCESS, FAIL)
+        @type msg: str
+        @param msg: describe the status in detail
+        @type instanceid: str
+        @param instanceid: the name of instance(ownertypenth),
+        it's only necessary to keep this name unique, we don't need to transfer
+        info from the instanceid(vm name)
         @type spicehost: str
         @param spicehost: the listen ip addr of spice server
         @type spiceport: int
         @param spiceport: the listen port of spice server
         """
-        req = [CMDClientAgent.reqinstance, {'type': type,
-                                            'spicehost': spicehost,
-                                            'spiceport': spiceport}]
+        ack = [CMDClientAgent.createinstance, {'status': status,
+                                               'msg': msg,
+                                               'instanceid': instanceid,
+                                               'spicehost': spicehost,
+                                               'spiceport': spiceport}]
         
-        return json.dumps(req)
+        return json.dumps(ack)
 
