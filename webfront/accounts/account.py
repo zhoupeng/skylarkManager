@@ -184,3 +184,8 @@ def getStatus(request):
     """
     pass
 
+def order(username, passwd, orderlist):
+    """User request an order,
+    if successful, user will get the permission accordingly. 
+    """
+    pass

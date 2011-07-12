@@ -24,6 +24,7 @@ class CMDAccount:
     userregister = "USERREGISTER"
     userunregister = "USERUNREGISTER"
     generalresp = "GENERALRESP"
+    order = "ORDER"
 
 
     @staticmethod
@@ -131,7 +132,7 @@ class CMDAccount:
         pass
 
     @staticmethod
-    def register(username, passwd):
+    def api_register(username, passwd):
         """register as a valid user,
         More info need to be extended.
 
@@ -161,7 +162,7 @@ class CMDAccount:
         return json.dumps(ack)
 
     @staticmethod
-    def unRegister(username, passwd):
+    def api_unRegister(username, passwd):
         """request to unregister from the system,
 
         @type username: str
@@ -199,4 +200,31 @@ class CMDAccount:
         ack = [CMDAccount.generalresp, {"status": status,
                                         "msg": msg}]
         return json.dumps(ack)                                        
+
+    @staticmethod
+    def api_order(username, passwd, orderlist):
+        """User request an order,
+        if successful, user will get the permission accordingly. 
+
+        @type username: str
+        @param username: user name
+        @type passwd: str
+        @param passwd: password
+        @type orderlist: str
+        @param orderlist: Order list
+        """
+        pass
+
+    @staticmethod
+    def ack_order(status, msg):
+        """response to order request
+        @type status: str
+        @param status: auth success or fail("success", "fail")
+        @type msg: str
+        @param msg: message for detail
+        """
+        ack = [CMDAccount.ORDER, {"status": status,
+                                      "msg": msg}]
+
+        return json.dumps(ack)
 
