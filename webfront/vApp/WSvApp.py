@@ -33,6 +33,9 @@ class CMDvApp:
     reqinstance = "REQINSTANCE"
     createimage = "CREATEIMAGE"
     createinstance = "CREATEINSTANCE"
+    # Function necessary but I'm not sure if it's proper to be WS API
+    # open to user.
+    newinstancebysnapshot = "NEWINSTANCEBYSNAPSHOT" 
     releaseinstance = "RELEASEINSTANCE"
     startinstance = "STARTINSTANCE"
     shutdowninstance = "SHUTDOWNINSTANCE"
@@ -151,6 +154,49 @@ class CMDvApp:
         """
 
         ack = [CMDvApp.createinstance, {'status': status,
+                                               'msg': msg,
+                                               'type': type,
+                                               'instanceid':instanceid,
+                                               'spicehost': spicehost,
+                                               'spiceport': spiceport}]
+        return ack
+
+    @staticmethod
+    def api_newInstanceBySnapshot(username, passwd, type):
+        """Create an instance from snapshot
+ 
+        @type username: str
+        @param username: user name
+        @type passwd: str
+        @param passwd: password
+        @type type: str
+        @param type: the type of the instance
+        """
+        req = [CMDvApp.newinstancebysnapshot, {'username': username,
+                                               'passwd': passwd,
+                                               'type': type}]
+        return json.dumps(req)
+
+    @staticmethod
+    def ack_newInstanceBySnapshot(status, msg, type,
+                           instanceid, spicehost, spiceport):
+        """Response to newinstancebysnapshot request
+
+        @type status: str
+        @param status: success or fail(SUCCESS, FAIL)
+        @type msg: str
+        @param msg: detailed describtion
+        @type type: str
+        @param type: the type of instance (e.g. winxp, word)
+        @type instanceid: str
+        @param instanceid: the unique identifier(instance name used in fact)
+        @type spicehost: str
+        @param spicehost: the listen ip addr of spice server
+        @type spiceport: int
+        @param spiceport: the listen port of spice server
+        """
+
+        ack = [CMDvApp.newinstancebysnapshot, {'status': status,
                                                'msg': msg,
                                                'type': type,
                                                'instanceid':instanceid,
@@ -288,6 +334,8 @@ class CMDvApp:
         """ The instanceid(instance name) is used to find the checkpoint file,
         the restored instanceid can be different from the param instanceid, the
         restored instanceid is provided by the response.
+        This api is used to restore an instance saved before by user,
+        not for the system to create an instance from snapshot
 
         @type username: str
         @param username: user name
