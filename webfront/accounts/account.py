@@ -24,6 +24,8 @@ from WSAccount import *
 
 from smTypes import *
 
+from models import *
+
 @csrf_exempt
 def api_account(request):
     """The account related uniform entry.
@@ -54,7 +56,8 @@ def api_account(request):
     
     if cmd not in [CMDAccount.userlogin, CMDAccount.userlogout,
                    CMDAccount.myapplist, CMDAccount.allapplist,
-                   CMDAccount.userregister, CMDAccount.userunregister]:    
+                   CMDAccount.userregister, CMDAccount.userunregister,
+                   CMDAccount.order]:    
         jsstr = CMDAccount.ack_generalResp(Status.FAIL, "Invalid WebAPI")
         return HttpResponse(jsstr, mimetype = 'application/json')
 
@@ -75,6 +78,10 @@ def api_account(request):
         return HttpResponse(jsstr, mimetype = 'application/json')
     elif cmd == CMDAccount.userunregister:
         jsstr = unRegister(uname, passwd)
+        return HttpResponse(jsstr, mimetype = 'application/json')
+    elif cmd == CMDAccount.order:
+        orderlist = jsobj[1]['orderlist']
+        jsstr = order(uname, passwd, orderlist):
         return HttpResponse(jsstr, mimetype = 'application/json')
 
 def login(request, uname, passwd):
@@ -187,5 +194,39 @@ def getStatus(request):
 def order(username, passwd, orderlist):
     """User request an order,
     if successful, user will get the permission accordingly. 
+
+    @type username: str
+    @param username: user name
+    @type passwd: str
+    @param passwd: password
+    @type orderlist: list (that is [])
+    @param orderlist: contain a list of service type to order
     """
-    pass
+    user = auth.authenticate(username = username, password = passwd)
+    if user is not None:
+        # check Service if valid orderlist
+        for tp in orderlist:
+            c = Service.objects.filter(type = tp).count()
+            if c == 0:
+               return CMDAccount.ack_order(Status.FAIL,
+                               "invalid service type: %s" % tp)
+
+        for tp in orderlist:
+            srv = Service.objects.filter(type = tp)
+            # get num
+            od_qs = Order.objects.filter(user = user, service = srv[0])
+            num = 0
+            for od in od_qs:
+                if od.num > num
+                    num = od.num
+            if num:
+                num++
+
+            new_od = Order(user = user, service = srv[0],
+                           num = num, state = OrderState.ORDERED)
+            new_od.save()
+        
+        return CMDAccount.ack_order(Status.SUCCESS, "successful")
+    else:
+        return CMDAccount.ack_order(Status.FAIL,
+                                    "invalid user name or password")
