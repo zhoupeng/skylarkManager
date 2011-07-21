@@ -97,15 +97,34 @@ class CMDAccount:
         return json.dumps(req)
 
     @staticmethod
-    def ack_getMyAppList(username, passwd):
-        """response to user's getmyapplist
+    def ack_getMyAppList(username, status, msg, apps = []):
+        """response to user's get myapplist
 
         @type username: str
         @param username: user name
-        @type passwd: str
-        @param passwd: password
+        @type status: str
+        @param status: success or fail(SUCCESS, FAIL)
+        @type msg: str
+        @param msg: message for detail
+        @type apps: python list, like 
+                    [{'type':xx, 'num': xx, 'state': xx}, {}]
+        
+        @return type: json str, the parameter part is like this
+                      [{'instanceid': xx, 'type': xx, 'state': xx}]
+                      instanceid is instance's name
         """
-        pass
+        tmpApps = []
+        for i in apps:
+            it = {'instanceid': '%s%s%s' % (username, i['type'], i['num']),
+                  'type': i['type'],
+                  'state': i['state']}
+            tmpApps.append(it)
+
+        ack = [CMDAccount.myapplist, {"status": status,
+                                      "msg": msg,
+                                      "apps": tmpApps}]
+
+        return json.dumps(ack)
 
     @staticmethod
     def api_getAllAppList(username, passwd):
@@ -117,19 +136,25 @@ class CMDAccount:
         @param passwd: password
         """
         req = [CMDAccount.allapplist, {"username": username,
-                                    "passwd": passwd}]
+                                       "passwd": passwd}]
         return json.dumps(req)
 
     @staticmethod
-    def ack_getAllAppList(username, passwd):
-        """response to getallapplist
+    def ack_getAllAppList(status, msg, apps = []):
+        """response to get allapplist
 
-        @type username: str
-        @param username: user name
-        @type passwd: str
-        @param passwd: password
+        @type status: str
+        @param status: success or fail(SUCCESS, FAIL)
+        @type msg: str
+        @param msg: message for detail
+        @type apps: python list, like 
+                    [{'type':xx, 'logo': xx, 'description': xx}, {}]
         """
-        pass
+        ack = [CMDAccount.allapplist, {"status": status,
+                                       "msg": msg,
+                                       "apps": apps}]
+
+        return json.dumps(ack)
 
     @staticmethod
     def api_register(username, passwd):
@@ -210,10 +235,11 @@ class CMDAccount:
         @param username: user name
         @type passwd: str
         @param passwd: password
-        @type orderlist: str
-        @param orderlist: Order list
+        @type orderlist: list (that is [])
+        @param orderlist: contain a list of service type to order
         """
-        pass
+        req = [CMDAccount.order, {'orderlist': orderlist}]
+        return json.dumps(req)
 
     @staticmethod
     def ack_order(status, msg):

@@ -83,6 +83,12 @@ def api_account(request):
         orderlist = jsobj[1]['orderlist']
         jsstr = order(uname, passwd, orderlist):
         return HttpResponse(jsstr, mimetype = 'application/json')
+    elif cmd == CMDAccount.allapplist:
+        jsstr = getAllAppList()
+        return HttpResponse(jsstr, mimetype = 'application/json')
+    elif cmd == CMDAccount.myapplist:
+        jsstr = getMyAppList(username, passwd)
+        return HttpResponse(jsstr, mimetype = 'application/json')
 
 def login(request, uname, passwd):
     """User request to auth into the system.
@@ -165,26 +171,32 @@ def unRegister(username, passwd):
                                     "invalid user name or password")
 
 
-def getMyAppList(request):
-    """Get all the apps this user has applied
+def getMyAppList(username, passwd):
+    """Get all the apps this user has ordered 
     """
-    """
-    # Send registered app
-    appliedApps = ["APPLIEDAPPS",
-                   {"word": {"introduce": "...", "logo": "url"},
-                    "winxp": {"introduce": "...", "logo": "url"},
-                    "datashared": {"introduce": "...", "logo": "url"}}]
-
-    jsstr = json.dumps(appliedApps)
-    return jsstr
-    return HttpResponse(jsstr, mimetype = 'application/json')
-    """
-    pass
-
-def getAllAppList(request):
+    user = auth.authenticate(username = username, password = passwd)
+    if user is not None:
+        od_qs = Order.objects.filter(user = user)
+        apps = []
+        for app in od_qs:
+            it = {"type": app.service.type,
+                  "num": app.num, "state": app.state}
+            apps.append(it)
+        return CMDAccount.ack_getMyAppList(username, Status.SUCCESS,
+                                           'successfully', apps)
+    else:
+        return CMDAccount.ack_getMyAppList(username, Status.FAIL,
+                                           "invalid user name or password")
+def getAllAppList():
     """ Get all of the app list published
     """
-    pass
+    apps = []
+    for srv in Service.objects.all():
+        it = {'type': srv.type, 'logo': srv.logo,
+              'description': srv.description}
+        apps.append(it)
+    return ack_getAllAppList(Status.SUCCESS,
+                             'successfully', apps)
 
 def getStatus(request):
     """Get the status of user's apps 
