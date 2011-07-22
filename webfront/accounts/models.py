@@ -73,3 +73,13 @@ class Order(models.Model):
     service = models.ForeignKey(Service)
     num = models.IntegerField()
     state = models.IntegerField()
+
+    def instanceID(self):
+        """get the name of the instance corresponding to an order record
+        instanceid = username + type + num, so instanceid is gloal unique
+        """
+        instanceid = "%s%s%s" % (self.user.username,
+                                 self.service.type, self.num)
+
+        return instanceid
+
