@@ -57,7 +57,7 @@ def api_account(request):
     if cmd not in [CMDAccount.userlogin, CMDAccount.userlogout,
                    CMDAccount.myapplist, CMDAccount.allapplist,
                    CMDAccount.userregister, CMDAccount.userunregister,
-                   CMDAccount.order]:    
+                   CMDAccount.order, CMDAccount.appinfo]:
         jsstr = CMDAccount.ack_generalResp(Status.FAIL, "Invalid WebAPI")
         return HttpResponse(jsstr, mimetype = 'application/json')
 
@@ -88,6 +88,10 @@ def api_account(request):
         return HttpResponse(jsstr, mimetype = 'application/json')
     elif cmd == CMDAccount.myapplist:
         jsstr = getMyAppList(username, passwd)
+        return HttpResponse(jsstr, mimetype = 'application/json')
+    elif cmd == CMDAccount.appinfo:
+        instanceid = jsobj[1]['instanceid']
+        jsstr = getAppInfo(username, passwd, instanceid)
         return HttpResponse(jsstr, mimetype = 'application/json')
 
 def login(request, uname, passwd):
@@ -195,13 +199,30 @@ def getAllAppList():
         it = {'type': srv.type, 'logo': srv.logo,
               'description': srv.description}
         apps.append(it)
-    return ack_getAllAppList(Status.SUCCESS,
-                             'successfully', apps)
+    return CMDAccount.ack_getAllAppList(Status.SUCCESS,
+                                        'successfully', apps)
 
-def getStatus(request):
-    """Get the status of user's apps 
+def getAppInfo(username, passwd, instanceid):
+    """Get the information of user's specified app
     """
-    pass
+    user = auth.authenticate(username = username, password = passwd)
+    if user is not None:
+        od_qs = Order.objects.filter(user = user)
+        od = None
+        for od in od_qs:
+            if od.instanceID() == instanceid
+                break
+        if not od:
+            return CMDAccount.ack_getAppInfo(Status.FAIL,
+                                  "instance %s doesn't exist % instanceid")
+        info = {"type": od.service.type, "logo": od.service.logo,
+                "description": od.service.description, "state": od.state}
+
+        return CMDAccount.ack_getAppInfo(Status.SUCCESS,
+                                         "successfully", info)
+    else:
+        return CMDAccount.ack_getAppInfo(Status.FAIL,
+                                         "invalid user name or password")
 
 def order(username, passwd, orderlist):
     """User request an order,

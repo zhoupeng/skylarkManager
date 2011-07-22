@@ -25,6 +25,7 @@ class CMDAccount:
     userunregister = "USERUNREGISTER"
     generalresp = "GENERALRESP"
     order = "ORDER"
+    appinfo = "APPINFO"
 
 
     @staticmethod
@@ -153,6 +154,42 @@ class CMDAccount:
         ack = [CMDAccount.allapplist, {"status": status,
                                        "msg": msg,
                                        "apps": apps}]
+
+        return json.dumps(ack)
+
+    @staticmethod
+    def api_getAppInfo(username, passwd, instanceid):
+        """Get the information of user's specified app
+
+        @type username: str
+        @param username: user name
+        @type passwd: str
+        @param passwd: password
+        @type instanceid: str
+        @param instanceid: the name of instance
+        """
+        req = [CMDAccount.appinfo, {"username": username,
+                                    "passwd": passwd,
+                                    "instanceid": instanceid}]
+
+        return json.dumps(req)
+
+    @staticmethod
+    def ack_getAppInfo(status, msg, info = {}):
+        """response to get app info
+
+        @type status: str
+        @param status: success or fail(SUCCESS, FAIL)
+        @type msg: str
+        @param msg: message for detail
+        @type info: python map, like 
+          {'type':xx, 'logo': xx, 'description': xx, 'state': xx}
+        """
+        # TODO. Get more info about an instance, such as disk and vcpu
+
+        ack = [CMDAccount.appinfo, {"status": status,
+                                    "msg": msg,
+                                    "info": info}]
 
         return json.dumps(ack)
 
