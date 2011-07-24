@@ -141,7 +141,7 @@ class AgentCMDThread(threading.Thread):
 
     def run(self):
         while self.host.running:
-            cmd = self.host.sock.recv(512)
+            cmd = self.host.sock.recv(1024)
             if cmd:
                 jsobj = json.loads(cmd)
                 print "host:AgentCMDThread receive: %s" % jsobj
@@ -202,6 +202,63 @@ class AgentCMDThread(threading.Thread):
 
                         self.host.sock.send(ackcreateins)
 
-                #elif: ...
+                elif jsobj[0] == CMDHostAgent.newinstancebysnapshot:
+                    if self.host.getUUID() != jsobj[1]['uuid']:
+                        # ignore reqs shouldn't to me
+                        continue 
+
+                    hip = smNet.IPAddress.get_ip_address_nic(SPICE_NI)
+
+                    if not hip:
+                        print "Fail to get ip of NI(%s):%s:%s" % (SPICE_NI, __file__,
+                        smLog.__function__())
+                        sys.exit()
+
+                    hport = get_free_port4spice()
+                    # The format of instanceid(vm name) here are only useful
+                    # to our storage system to share a single disk img
+                    # file by @type, otherwise it only need to keep unique
+                    # The order puting 'type' at the end to help our
+                    # storage system to access in convenience.
+                    instanceid = jsobj[1]['owner'] + jsobj[1]['nth']
+                                 + '@' + jsobj[1]['type']
+                                 + '@' + '%s' % spicehost
+                                 + '@' + '%s' % spiceport
+
+                    inst = self.host.node.newInstanceBySnapshot(instanceid,
+                                                                hip,
+                                                                hport)
+
+                    acknewins = None
+                    if inst:
+                        global instances
+                        inst.owner = jsobj[1]['owner']
+                        inst.type = jsobj[1]['type']
+                        inst.nth = jsobj[1]['nth']
+                        instances.lock()
+                        instances.append(inst)
+                        instances.unlock()
+                        acknewins = CMDHostAgent.ack_newInstanceBySnapshot(
+                          self.host.getUUID(),
+                          status = Status.SUCCESS,
+                          msg = 'create instance by snapshot successfully',
+                          owner = inst.owner,
+                          type = inst.type,
+                          nth = inst.nth,
+                          spicehost = inst.spicehost,
+                          spiceport = inst.spiceport)
+                    else:
+                        print "AgentCMDThread: createInstance  by snapshot failed"
+                        acknewins = CMDHostAgent.ack_newInstanceBySnapshot(
+                                       self.host.getUUID(),
+                                       status = Status.FAIL,
+                                       msg = 'failed to create instance by snapshot',
+                                       owner = jsobj[1]['owner'],
+                                       type = jsobj[1]['type'],
+                                       nth = jsobj[1]['nth'],
+                                       spicehost = '',
+                                       spiceport = 0)
+
+                    self.host.sock.send(acknewins)
 
 

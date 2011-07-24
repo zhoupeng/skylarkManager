@@ -317,6 +317,49 @@ MEM(k) MEM(%)  MAXMEM(k) MAXMEM(%) VCPUS NETS NETTX(k) NETRX(k) VBDS   VBD_OO\
         return ins
 
 
+    @staticmethod
+    def _runXmResotre(checkpointfile, vmName, spicehost, spiceport):
+        """Helper function for L{newInstanceBySnapshot, restore}
+        to run "xm restore".
+        Assume checkpointfile is ready
+        
+        @type checkpointfile: 
+        @param: the file name of the checkpoint,
+         including the complete path, otherwish the current dir 
+        """
+        res = utilsProcess.RunCmd(["xm", "restore", checkpointfile])
+        
+        if res.failed:
+            print "xm restore fals, reason:%s" % res.fail_reason
+            return None
+        
+        ins = smObjects.Instance(vmName, spicehost, spiceport)
+
+        return ins
+
+
+    def newInstanceBySnapshot(self, vmName, spicehost, spiceport):
+        """Create a VM from checkpoint template file
+        Use our storage system to parse vmName
+        """
+        # have a copy from the checkpoint file template,
+        # then restore from the copy?
+        ckp = "%s/%s.ckp" % (HV_CKP_TEMPLATE_PATH, vmName)
+        ins = self._runXmResotre(ckp, vmName, spicehost, spiceport)
+        return ins
+
+
+    def newInstanceBySnapshot(self, vmName, spicehost, spiceport):
+        """Restore a VM from it's checkpoint file
+        Don't use and allow the storage system to parse vmName, keep
+        the same as you see.
+        Assume the vm's checkpoint file is save before
+        """
+        ckp = "%s/%s.ckp" % (HV_DISK_IMG_PATH, vmName)
+        ins = self._runXmResotre(ckp, vmName, spicehost, spiceport)
+        return ins
+
+
     def verify(self):
         """Verify the hypervisor.
 

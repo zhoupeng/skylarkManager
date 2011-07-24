@@ -22,8 +22,14 @@ HV_DEVICE_MODEL = "/usr/lib/xen/bin/qemu-dm"
 
 #HV_VM_CONFIG_PATH = "/etc/skylark/config"
 #HV_DISK_IMG_PATH = "/etc/skylark/imgs"
+"""
+The path of templates published,
+Particular vm's ckp path is the same as HV_DISK_IMG_PATH
+"""
+#HV_CKP_TEMPLATE_PATH = "/etc/skylark/ckptems" 
 HV_VM_CONFIG_PATH = "/home/zp/Desktop/fc8/hvm-WinXP"
 HV_DISK_IMG_PATH = "/home/zp/Desktop/fc8/hvm-WinXP"
+HV_CKP_TEMPLATE_PATH = "/home/zp/Desktop/fc8/hvm-WinXP/ckps"
 
 #
 # NB: Port N.O. allocation

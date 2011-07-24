@@ -105,5 +105,16 @@ class Client(threading.Thread):
                                                               jsobj[1]['type'],
                                                               jsobj[1]['nth'])
                 h.sock.send(req2host)
+            elif jsobj[0] == CMDClientAgent.newinstancebysnapshot:
+                h = self.sched.schedule(hosts)
 
+                if not h:
+                    print "Client: error, scheded h is None"
+                    continue
+
+                req2host = CMDHostAgent.cmd_newinstancebysnapshot(h.getUUID(),
+                                                              jsobj[1]['user'],
+                                                              jsobj[1]['type'],
+                                                              jsobj[1]['nth'])
+                h.sock.send(req2host)
 

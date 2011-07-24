@@ -126,6 +126,35 @@ class Host(threading.Thread):
                     soc.sendto(ackcreateins, n.senderaddr)
                     pendingReqsFromCli.nodes.remove(n)
                     pendingReqsFromCli.unlock()
+                elif jsobj[0] == CMDHostAgent.newinstancebysnapshot:
+                    # TODO refactoring
+                    pendingReqsFromCli.lock()
+                    n = None # n is ClientReq
+                    for n in pendingReqsFromCli.nodes:
+                        if n.request[0] == jsobj[0]:
+                            if n.request[1]['owner'] == jsobj[1]['owner']:
+                                if n.request[1]['type'] == jsobj[1]['type']:
+                                    if n.request[1]['nth'] == jsobj[1]['nth']:
+                                        break
+
+                    if not n:
+                        continue
+
+                    # sent to n.senderaddr
+                    # remove n from pendingReqsFromCli
+                    soc = socket.socket(type = socket.SOCK_DGRAM)
+                    instanceid = jsobj[1]['owner'] + jsobj[1]['type']
+                                 + jsobj[1]['nth']
+                    acknewinsbysnapshot =
+                        CMDClientAgent.ack_newInstanceBySnapshot(
+                                                jsobj[1]['status'],
+                                                jsobj[1]['msg'], 
+                                                instanceid,
+                                                jsobj[1]['spicehost'],
+                                                jsobj[1]['spiceport'])
+                    soc.sendto(acknewinsbysnapshot, n.senderaddr)
+                    pendingReqsFromCli.nodes.remove(n)
+                    pendingReqsFromCli.unlock()
 
 
     def dump(self):
