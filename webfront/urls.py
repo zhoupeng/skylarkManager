@@ -21,6 +21,6 @@ urlpatterns = patterns('',
     # testing through web
      url(r'^webtester$', 'django.views.generic.simple.direct_to_template', {'template': 'webtester.html'}),
 
-     url(r'^vappreq$', vApp.views.vAppReq),
+     url(r'^api/vapp$', vApp.views.api_vapp),
      url(r'^api/accounts$', accounts.account.api_account),
 )

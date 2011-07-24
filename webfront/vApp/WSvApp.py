@@ -121,7 +121,8 @@ class CMDvApp:
     @staticmethod
     def api_createInstance(username, passwd, type):
         """Create an instance.
- 
+        Assume the disk img is there.
+
         @type username: str
         @param username: user name
         @type passwd: str
@@ -135,30 +136,30 @@ class CMDvApp:
         return json.dumps(req)
 
     @staticmethod
-    def ack_createInstance(status, msg, type,
-                           instanceid, spicehost, spiceport):
+    def ack_createInstance(status, msg, info = {}):
         """Response to createinstance request
 
         @type status: str
         @param status: success or fail(SUCCESS, FAIL)
         @type msg: str
         @param msg: detailed describtion
-        @type type: str
-        @param type: the type of instance (e.g. winxp, word)
-        @type instanceid: str
-        @param instanceid: the unique identifier(instance name used in fact)
-        @type spicehost: str
-        @param spicehost: the listen ip addr of spice server
-        @type spiceport: int
-        @param spiceport: the listen port of spice server
+        @type info: python map, like
+        {'instanceid':xx, 'spicehost': xx, 'spiceport': xx}
+        @param info: the necessary infomation for
+        client to access the instance.
+            * type instanceid: str
+            * param instanceid: the unique identifier
+              (instance name used in fact)
+            * type spicehost: str
+            * param spicehost: the listen ip addr of spice server
+            * type spiceport: int
+            * param spiceport: the listen port of spice server
+
         """
 
         ack = [CMDvApp.createinstance, {'status': status,
-                                               'msg': msg,
-                                               'type': type,
-                                               'instanceid':instanceid,
-                                               'spicehost': spicehost,
-                                               'spiceport': spiceport}]
+                                        'msg': msg,
+                                        'info': info}]
         return ack
 
     @staticmethod
@@ -178,31 +179,30 @@ class CMDvApp:
         return json.dumps(req)
 
     @staticmethod
-    def ack_newInstanceBySnapshot(status, msg, type,
-                           instanceid, spicehost, spiceport):
+    def ack_newInstanceBySnapshot(status, msg, info = {}):
         """Response to newinstancebysnapshot request
 
         @type status: str
         @param status: success or fail(SUCCESS, FAIL)
         @type msg: str
         @param msg: detailed describtion
-        @type type: str
-        @param type: the type of instance (e.g. winxp, word)
-        @type instanceid: str
-        @param instanceid: the unique identifier(instance name used in fact)
-        @type spicehost: str
-        @param spicehost: the listen ip addr of spice server
-        @type spiceport: int
-        @param spiceport: the listen port of spice server
+        @type info: python map, like
+        {'instanceid':xx, 'spicehost': xx, 'spiceport': xx}
+        @param info: the necessary infomation for
+        client to access the instance.
+            * type instanceid: str
+            * param instanceid: the unique identifier
+              (instance name used in fact)
+            * type spicehost: str
+            * param spicehost: the listen ip addr of spice server
+            * type spiceport: int
+            * param spiceport: the listen port of spice server
         """
 
         ack = [CMDvApp.newinstancebysnapshot, {'status': status,
                                                'msg': msg,
-                                               'type': type,
-                                               'instanceid':instanceid,
-                                               'spicehost': spicehost,
-                                               'spiceport': spiceport}]
-        return ack
+                                               'info': info}]
+        return json.dumps(ack)
 
     @staticmethod
     def api_releaseInstance(username, passwd, instanceid):
