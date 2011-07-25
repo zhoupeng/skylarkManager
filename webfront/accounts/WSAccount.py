@@ -218,7 +218,7 @@ class CMDAccount:
         @type msg: str
         @param msg: message for detail
         """
-        ack = [CMDAccount.userunregister, {"status": status,
+        ack = [CMDAccount.userregister, {"status": status,
                                       "msg": msg}]
 
         return json.dumps(ack)
@@ -232,8 +232,8 @@ class CMDAccount:
         @type passwd: str
         @param passwd: password
         """
-        req = [CMDAccount.userregister, {"username": username,
-                                         "passwd": passwd}]
+        req = [CMDAccount.userunregister, {"username": username,
+                                           "passwd": passwd}]
         return json.dupms(req)
 
     @staticmethod
