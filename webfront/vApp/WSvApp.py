@@ -114,7 +114,7 @@ class CMDvApp:
         @param imageid: the id of the image
         """
         ack = [CMDvApp.createimage, {'status': status,
-                                     'msg': msg
+                                     'msg': msg,
                                      'imageid': imageid}]
         return json.dumps(ack)
 

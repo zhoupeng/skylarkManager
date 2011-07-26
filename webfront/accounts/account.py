@@ -81,7 +81,7 @@ def api_account(request):
         return HttpResponse(jsstr, mimetype = 'application/json')
     elif cmd == CMDAccount.order:
         orderlist = jsobj[1]['orderlist']
-        jsstr = order(uname, passwd, orderlist):
+        jsstr = order(uname, passwd, orderlist)
         return HttpResponse(jsstr, mimetype = 'application/json')
     elif cmd == CMDAccount.allapplist:
         jsstr = getAllAppList()
@@ -210,7 +210,7 @@ def getAppInfo(username, passwd, instanceid):
         od_qs = Order.objects.filter(user = user)
         od = None
         for od in od_qs:
-            if od.instanceID() == instanceid
+            if od.instanceID() == instanceid:
                 break
         if not od:
             return CMDAccount.ack_getAppInfo(Status.FAIL,
@@ -250,10 +250,10 @@ def order(username, passwd, orderlist):
             od_qs = Order.objects.filter(user = user, service = srv[0])
             num = 0
             for od in od_qs:
-                if od.num > num
+                if od.num > num:
                     num = od.num
             if num:
-                num++
+                num += 1
 
             new_od = Order(user = user, service = srv[0],
                            num = num, state = OrderState.ORDERED)
