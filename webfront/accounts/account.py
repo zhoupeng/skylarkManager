@@ -77,7 +77,7 @@ def api_account(request):
         jsstr = logout(request)
         return HttpResponse(jsstr, mimetype = 'application/json')
     elif cmd == CMDAccount.userunregister:
-        jsstr = unRegister(uname, passwd)
+        jsstr = unRegister(request, uname, passwd)
         return HttpResponse(jsstr, mimetype = 'application/json')
     elif cmd == CMDAccount.order:
         orderlist = jsobj[1]['orderlist']
@@ -160,11 +160,12 @@ def register(username, passwd):
         return CMDAccount.ack_register(Status.FAIL,
                               "internal err: multiple %s exist" % username)
 
-def unRegister(username, passwd):
+def unRegister(request, username, passwd):
     """User request to unregister.
     """
     user = auth.authenticate(username = username, password = passwd)
     if user is not None:
+        auth.logout(request)
         user.is_active = False
         user.groups.clear()
         user.user_permissions.clear()
