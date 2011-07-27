@@ -9,7 +9,7 @@
 <html>
 
 <head>
-<script type="text/javascript">
+<script type = "text/javascript">
 var xmlhttp;
 
 var vapp_entry = "/api/vapp";
@@ -70,7 +70,7 @@ function getSelectedValue(selectobject)
 
 function addOpts4Sel(selectobject, options)
 {
-    for (i =0; i < options.length; i++)
+    for (i = 0; i < options.length; i++)
     {
         var opt = document.createElement("option");
         opt.text = options[i].toLowerCase()
@@ -124,13 +124,13 @@ function apiSelOnClick(selectobject)
 
 <body>
 API Entry:
-<select id = "api_entry" onchange = "entrySelOnChange(this)" onclick = "entrySelOnChange(this)">
+<select id = "api_entry" onchange = "entrySelOnChange(this)">
     <option value = "/api/accounts">accounts</option>
     <option value = "/api/vapp">vapp</option>
 </select>
 <br />
 APIs:
-<select id = "api" onclick = "apiSelOnClick(this)"></select>
+<select id = "api" onchange = "apiSelOnClick(this)"></select>
 <br />
 Command:
 <br />
