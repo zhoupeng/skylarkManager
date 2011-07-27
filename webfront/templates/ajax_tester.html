@@ -1,0 +1,147 @@
+<!--
+ Author:
+  Zhou Peng <ailvpeng25@gmail.com>, 2011.07 ~
+
+ Description:
+  Web tester implemented with ajax
+-->
+
+<html>
+
+<head>
+<script type="text/javascript">
+var xmlhttp;
+
+var vapp_entry = "/api/vapp";
+var account_entry = "/api/accounts";
+
+var api_vapp = new Array("REQINSTANCE",
+                         "CREATEIMAGE",
+                         "CREATEINSTANCE",
+                         "NEWINSTANCEBYSNAPSHOT",
+                         "RELEASEINSTANCE",
+                         "STARTINSTANCE",
+                         "SHUTDOWNINSTANCE",
+                         "SAVEINSTANCE",
+                         "RESTOREINSTANCE",
+                         "GETINSTANCEINFO");
+
+var api_accounts = new Array("USERLOGIN",
+                             "USERLOGOUT",
+                             "MYAPPLIST",
+                             "APPLIST",
+                             "USERREGISTER",
+                             "USERUNREGISTER",
+                             "GENERALRESP",
+                             "ORDER",
+                             "APPINFO");
+
+var api = new Object();
+api.vapp = api_vapp;
+api.accounts = api_accounts;
+
+function sendRequest(api_entry, req)
+{
+    xmlhttp = new XMLHttpRequest();
+    
+    xmlhttp.onreadystatechange = function()
+    {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
+        {
+            document.getElementById("display").innerHTML += "<br/>"
+                                                         + xmlhttp.responseText
+                                                         + "<br/><br/>";
+        }
+    }
+    
+    document.getElementById("display").innerHTML += req;
+   
+    xmlhttp.open("POST", api_entry, true);
+    xmlhttp.setRequestHeader("Content-type","application/json");
+    xmlhttp.send(req)
+}
+
+function getSelectedValue(selectobject)
+{
+    var index = 0
+    index = selectobject.selectedIndex
+    return selectobject.options[index].value
+}
+
+function addOpts4Sel(selectobject, options)
+{
+    for (i =0; i < options.length; i++)
+    {
+        var opt = document.createElement("option");
+        opt.text = options[i].toLowerCase()
+        opt.value = options[i]
+        try
+        {
+            selectobject.add(opt, null); // standards compliant
+        }
+        catch(ex)
+        {
+            selectobject.add(opt); // IE only
+        }
+    }
+}
+
+function selRemoveAll(selectobject)
+{
+    while (selectobject.length != 0)
+    {
+       selectobject.remove(0) 
+    }
+}
+
+/*
+ * The onchange event of the 'api_entry' select object 
+ */
+function entrySelOnChange(selectobject)
+{
+    var index = 0;
+    index = selectobject.selectedIndex;
+    
+    api_entry = selectobject.options[index].text
+    selectAPIObj = document.getElementById("api")
+    
+    selRemoveAll(selectAPIObj)
+    addOpts4Sel(selectAPIObj, api[api_entry]) // or api.vapp, api.accounts
+}
+
+/*
+ * The onclick event of the 'api' select object 
+ */
+function apiSelOnClick(selectobject)
+{
+    var txt;
+    var index = selectobject.selectedIndex;
+    txt = "[\"" + selectobject.options[index].value + "\", {}]"
+    document.getElementById("cmd").value = txt
+}
+</script>
+</head>
+
+<body>
+API Entry:
+<select id = "api_entry" onchange = "entrySelOnChange(this)" onclick = "entrySelOnChange(this)">
+    <option value = "/api/accounts">accounts</option>
+    <option value = "/api/vapp">vapp</option>
+</select>
+<br />
+APIs:
+<select id = "api" onclick = "apiSelOnClick(this)"></select>
+<br />
+Command:
+<br />
+<input type = "text" id = "cmd" size = "100", value = '["USERLOGIN", {"username": "abc", "passwd": "abc"}]'>
+<br />
+<button id = "button" onclick = "sendRequest(getSelectedValue(document.getElementById('api_entry')), document.getElementById('cmd').value)">SendRequest</button>
+
+<br />
+<label id = "display_title"> <h3> Output Display: </h3> </label>
+<p id = "display"></p>
+</body>
+
+</html>
+
