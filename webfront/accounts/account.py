@@ -91,7 +91,7 @@ def api_account(request):
         return HttpResponse(jsstr, mimetype = 'application/json')
     elif cmd == CMDAccount.appinfo:
         instanceid = jsobj[1]['instanceid']
-        jsstr = getAppInfo(username, passwd, instanceid)
+        jsstr = getAppInfo(uname, passwd, instanceid)
         return HttpResponse(jsstr, mimetype = 'application/json')
 
 def login(request, uname, passwd):
