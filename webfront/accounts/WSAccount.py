@@ -286,7 +286,7 @@ class CMDAccount:
         @type msg: str
         @param msg: message for detail
         """
-        ack = [CMDAccount.ORDER, {"status": status,
+        ack = [CMDAccount.order, {"status": status,
                                       "msg": msg}]
 
         return json.dumps(ack)

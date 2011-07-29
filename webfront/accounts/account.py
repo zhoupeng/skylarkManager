@@ -87,7 +87,7 @@ def api_account(request):
         jsstr = getAllAppList()
         return HttpResponse(jsstr, mimetype = 'application/json')
     elif cmd == CMDAccount.myapplist:
-        jsstr = getMyAppList(username, passwd)
+        jsstr = getMyAppList(uname, passwd)
         return HttpResponse(jsstr, mimetype = 'application/json')
     elif cmd == CMDAccount.appinfo:
         instanceid = jsobj[1]['instanceid']
@@ -242,7 +242,7 @@ def order(username, passwd, orderlist):
         for tp in orderlist:
             c = Service.objects.filter(type = tp).count()
             if c == 0:
-               return CMDAccount.ack_order(Status.FAIL,
+                return CMDAccount.ack_order(Status.FAIL,
                                "invalid service type: %s" % tp)
 
         for tp in orderlist:
@@ -253,8 +253,8 @@ def order(username, passwd, orderlist):
             for od in od_qs:
                 if od.num > num:
                     num = od.num
-            if num:
-                num += 1
+
+            num += 1
 
             new_od = Order(user = user, service = srv[0],
                            num = num, state = OrderState.ORDERED)
