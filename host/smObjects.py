@@ -22,7 +22,8 @@ class Instance:
     can be accessed by getinstanceinfo
     """
 
-    def __init__(self, name, spicehost, spiceport, owner, type, nth):
+    def __init__(self, name, spicehost, spiceport, owner = None,
+                 type = None, nth = 0):
         """
         @type name: str
         @params name: vm name
@@ -33,7 +34,7 @@ class Instance:
         @type type: str
         @params type: instance type, served for(winxp, linux, word ...)
         @type nth: str
-        @params nth: how many instance now('0', '1', '2' ...)
+        @params nth: how many instance now('1', '2' ...)
         @type uuid: str
         @params uuid: the uuid of this instance
         @type state: str
