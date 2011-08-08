@@ -90,12 +90,12 @@ MEM(k) MEM(%)  MAXMEM(k) MAXMEM(%) VCPUS NETS NETTX(k) NETRX(k) VBDS   VBD_OO\
 
         # clean up 'no limit' string of dom0 max mem
         # clean up 'n/a' string of MAXMEM(%) 
-        #lines.reverse()
+        lines.reverse()
         #lines[0] = lines[0].replace("no limit", "0")
         #lines[0] = lines[0].replace("n/a", "0")
-        for line in lines:
-            line.replace("no limit", "0")
-            line.replace("n/a", "0")
+        for i in range(0, len(lines)):
+            lines[i] = lines[0].replace("no limit", "0")
+            lines[i] = lines[0].replace("n/a", "0")
        
         result = []
         for line in lines:
