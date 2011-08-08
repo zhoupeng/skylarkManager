@@ -69,12 +69,12 @@ def api_vapp(request):
     uname = jsobj[1]['username']
     passwd = jsobj[1]['passwd']
 
-    if cmd == CMDClientAgent.reqinstance:
+    if cmd == CMDvApp.reqinstance:
         jsstr = reqInstance(uname, passwd, type)
         return HttpResponse(ret, mimetype = 'application/json')
-    elif cmd == newinstancebysnapshot:
+    elif cmd == CMDvApp.newinstancebysnapshot:
         type = jsobj[1]['type']
-        jsstr = newInstanceBySnapshot(username, passwd, type)
+        jsstr = newInstanceBySnapshot(uname, passwd, type)
         return HttpResponse(jsstr, mimetype = 'application/json')
 
 def reqInstance(username, passwd, type):
@@ -229,10 +229,10 @@ def newInstanceBySnapshot(username, passwd, type):
     od_qs = Order.objects.filter(user = user)
     od = None
     for od in od_qs:
-        if od.service.type == type and od.state == OrderState.ordered:
+        if od.service.type == type and od.state == OrderState.ORDERED:
             break
     if od:
-        newInsBySnap = CMDClientAgent.cmd_newinstancebysnapshot(username,
+        newInsBySnap = CMDClientAgent.cmd_newInstanceBySnapshot(username,
                                                            type,
                                                            "%s" % od.num)
         soc = socket.socket(type = socket.SOCK_DGRAM)
