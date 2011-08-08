@@ -192,12 +192,12 @@ MEM(k) MEM(%)  MAXMEM(k) MAXMEM(%) VCPUS NETS NETTX(k) NETRX(k) VBDS   VBD_OO\
         @return: tuple (name, id, memory, vcpus, stat, times)
 
         """
-        xm_list = self._getXMList(instance_name=="Domain-0")
+        xm_list = self._getXMList(instance_name == "Domain-0")
         result = None
         for data in xm_list:
             if data[0] == instance_name:
                 result = data
-            break
+                break
         return result
 
 
