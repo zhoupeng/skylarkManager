@@ -116,8 +116,7 @@ class Host(threading.Thread):
                     # sent to n.senderaddr
                     # remove n from pendingReqsFromCli
                     soc = socket.socket(type = socket.SOCK_DGRAM)
-                    instanceid = jsobj[1]['owner'] + jsobj[1]['type']
-                                 + jsobj[1]['nth']
+                    instanceid = jsobj[1]['owner'] + jsobj[1]['type'] + jsobj[1]['nth']
                     ackcreateins = CMDClientAgent.ack_createInstance(jsobj[1]['status'],
                                                                jsobj[1]['msg'], 
                                                                instanceid,
@@ -143,10 +142,8 @@ class Host(threading.Thread):
                     # sent to n.senderaddr
                     # remove n from pendingReqsFromCli
                     soc = socket.socket(type = socket.SOCK_DGRAM)
-                    instanceid = jsobj[1]['owner'] + jsobj[1]['type']
-                                 + jsobj[1]['nth']
-                    acknewinsbysnapshot =
-                        CMDClientAgent.ack_newInstanceBySnapshot(
+                    instanceid = jsobj[1]['owner'] + jsobj[1]['type'] + jsobj[1]['nth']
+                    acknewinsbysnapshot = CMDClientAgent.ack_newInstanceBySnapshot(
                                                 jsobj[1]['status'],
                                                 jsobj[1]['msg'], 
                                                 instanceid,

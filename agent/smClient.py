@@ -101,7 +101,7 @@ class Client(threading.Thread):
                     continue
 
                 req2host = CMDHostAgent.cmd_createInstance(h.getUUID(),
-                                                              jsobj[1]['user'],
+                                                              jsobj[1]['owner'],
                                                               jsobj[1]['type'],
                                                               jsobj[1]['nth'])
                 h.sock.send(req2host)
@@ -112,8 +112,8 @@ class Client(threading.Thread):
                     print "Client: error, scheded h is None"
                     continue
 
-                req2host = CMDHostAgent.cmd_newinstancebysnapshot(h.getUUID(),
-                                                              jsobj[1]['user'],
+                req2host = CMDHostAgent.cmd_newInstanceBySnapshot(h.getUUID(),
+                                                              jsobj[1]['owner'],
                                                               jsobj[1]['type'],
                                                               jsobj[1]['nth'])
                 h.sock.send(req2host)

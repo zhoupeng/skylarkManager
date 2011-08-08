@@ -165,7 +165,7 @@ class AgentCMDThread(threading.Thread):
                         # The order puting 'type' at the end to help our
                         # storage system to access in convenience.
                         instanceid = jsobj[1]['owner'] + jsobj[1]['nth']
-                                     + '@' + jsobj[1]['type']
+                        instanceid += '@' + jsobj[1]['type']
 
                         inst = self.host.node.createInstance(instanceid, hip,
                                                         hport)
@@ -221,9 +221,9 @@ class AgentCMDThread(threading.Thread):
                     # The order puting 'type' at the end to help our
                     # storage system to access in convenience.
                     instanceid = jsobj[1]['owner'] + jsobj[1]['nth']
-                                 + 'r' + '%s' % spicehost
-                                 + '_' + '%s' % spiceport
-                                 + '@' + jsobj[1]['type']
+                    instanceid += 'r' + '%s' % hip
+                    instanceid += '_' + '%s' % hport
+                    instanceid += '@' + jsobj[1]['type']
 
                     inst = self.host.node.newInstanceBySnapshot(instanceid,
                                                                 hip,
