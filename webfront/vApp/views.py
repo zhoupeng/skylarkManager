@@ -248,6 +248,10 @@ def newInstanceBySnapshot(username, passwd, type):
         spiceport = jsobj[1]['spiceport']
         info = {'instanceid': instanceid,
                 'spicehost': spicehost, 'spiceport': spiceport}
+
+        od.state = OrderState.RUNNING
+        od.save()
+
         return CMDvApp.ack_newInstanceBySnapshot(jsobj[1]['status'],
                                                  jsobj[1]['msg'], info)
     else:
