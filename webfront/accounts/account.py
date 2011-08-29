@@ -185,6 +185,7 @@ def getMyAppList(username, passwd):
         apps = []
         for app in od_qs:
             it = {"type": app.service.type,
+                  "category": app.service.category,
                   "num": app.num, "state": app.state}
             apps.append(it)
         return CMDAccount.ack_getMyAppList(username, Status.SUCCESS,
@@ -197,7 +198,7 @@ def getAllAppList():
     """
     apps = []
     for srv in Service.objects.all():
-        it = {'type': srv.type, 'logo': srv.logo,
+        it = {'type': srv.type, 'category': srv.category, 'logo': srv.logo,
               'description': srv.description}
         apps.append(it)
     return CMDAccount.ack_getAllAppList(Status.SUCCESS,
@@ -216,7 +217,8 @@ def getAppInfo(username, passwd, instanceid):
         if not od:
             return CMDAccount.ack_getAppInfo(Status.FAIL,
                                   "instance %s doesn't exist % instanceid")
-        info = {"type": od.service.type, "logo": od.service.logo,
+        info = {"type": od.service.type, "category": od.service.category,
+                "logo": od.service.logo,
                 "description": od.service.description, "state": od.state}
 
         return CMDAccount.ack_getAppInfo(Status.SUCCESS,

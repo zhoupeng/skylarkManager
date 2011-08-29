@@ -108,16 +108,19 @@ class CMDAccount:
         @type msg: str
         @param msg: message for detail
         @type apps: python list, like 
-                    [{'type':xx, 'num': xx, 'state': xx}, {}]
+                    [{'type': xx, 'category': xx, 'num': xx,
+                      'state': xx}, {}]
         
         @return type: json str, the parameter part is like this
-                      [{'instanceid': xx, 'type': xx, 'state': xx}]
+                      [{'instanceid': xx, 'type': xx, 'category': xx,
+                        'state': xx}]
                       instanceid is instance's name
         """
         tmpApps = []
         for i in apps:
             it = {'instanceid': '%s%s%s' % (username, i['type'], i['num']),
                   'type': i['type'],
+                  'category': i['category'],
                   'state': i['state']}
             tmpApps.append(it)
 
@@ -149,7 +152,8 @@ class CMDAccount:
         @type msg: str
         @param msg: message for detail
         @type apps: python list, like 
-                    [{'type':xx, 'logo': xx, 'description': xx}, {}]
+                    [{'type':xx, 'category': xx, 'logo': xx,
+                     'description': xx}, {}]
         """
         ack = [CMDAccount.allapplist, {"status": status,
                                        "msg": msg,
@@ -183,7 +187,8 @@ class CMDAccount:
         @type msg: str
         @param msg: message for detail
         @type info: python map, like 
-          {'type':xx, 'logo': xx, 'description': xx, 'state': xx}
+          {'type':xx, 'category':xx, 'logo': xx, 'description': xx,
+           'state': xx}
         """
         # TODO. Get more info about an instance, such as disk and vcpu
 

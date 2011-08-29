@@ -24,6 +24,7 @@ class Service(models.Model):
     The different params will be patched as different service
 
     @filed type: the service type or the name of the service
+    @field category: 'DESKTOP', 'APPLICATION', 'DATA'
     @filed logo: the file name of logo picture (file path not included)
     @field description: introduce to this service
     @field price: The price of this service, reserved
@@ -34,8 +35,12 @@ class Service(models.Model):
     @field netspeed: reserved
     @field cpunum: reserved
     """
+    CAT_DESKTOP = 'DESKTOP'
+    CAT_APP = 'APPLICATION'
+    CAT_DATA = 'DATA'
 
     type = models.CharField(max_length = 50, primary_key = True)
+    category = models.CharField(max_length = 15)
     logo = models.CharField(max_length = 50, null = True)
     description = models.CharField(max_length = 500, null = True)
 
