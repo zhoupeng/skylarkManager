@@ -2,6 +2,7 @@ from django.conf.urls.defaults import patterns, include, url
 import vApp.urls
 import vApp.views
 import accounts.account
+import settings
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -24,4 +25,6 @@ urlpatterns = patterns('',
 
      url(r'^api/vapp$', vApp.views.api_vapp),
      url(r'^api/accounts$', accounts.account.api_account),
+
+     url(r'^logos/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.LOGO_ROOT}),
 )

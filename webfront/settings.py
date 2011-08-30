@@ -43,6 +43,10 @@ USE_I18N = True
 # calendars according to the current locale
 USE_L10N = True
 
+import os
+here = lambda x: os.path.join(os.path.abspath(os.path.dirname(__file__)), x)
+LOGO_ROOT = here('media/logos')
+
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
 MEDIA_ROOT = ''
