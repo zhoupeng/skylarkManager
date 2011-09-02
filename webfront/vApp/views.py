@@ -107,8 +107,9 @@ def createInstance(username, passwd, type):
                                           'invalid username or passord')
     od_qs = Order.objects.filter(user = user)
     od = None
-    for od in od_qs:
-        if od.service.type == type and od.state == OrderState.ordered:
+    for i in od_qs:
+        if i.service.type == type and i.state == OrderState.ordered:
+            od = i
             break
     if od:
         crtIns = CMDClientAgent.cmd_createInstance(username,
@@ -228,8 +229,9 @@ def newInstanceBySnapshot(username, passwd, type):
     
     od_qs = Order.objects.filter(user = user)
     od = None
-    for od in od_qs:
-        if od.service.type == type and od.state == OrderState.ORDERED:
+    for i in od_qs:
+        if i.service.type == type and i.state == OrderState.ORDERED:
+            od = i
             break
     if od:
         newInsBySnap = CMDClientAgent.cmd_newInstanceBySnapshot(username,
