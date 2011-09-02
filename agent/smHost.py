@@ -152,6 +152,30 @@ class Host(threading.Thread):
                     soc.sendto(acknewinsbysnapshot, n.senderaddr)
                     pendingReqsFromCli.nodes.remove(n)
                     pendingReqsFromCli.unlock()
+                elif jsobj[0] == CMDHostAgent.shutdowninstance:
+                    # TODO refactoring
+                    pendingReqsFromCli.lock()
+                    n = None # n is ClientReq
+                    for n in pendingReqsFromCli.nodes:
+                        if n.request[0] == jsobj[0]:
+                            if n.request[1]['owner'] == jsobj[1]['owner']:
+                                if n.request[1]['type'] == jsobj[1]['type']:
+                                    if n.request[1]['nth'] == jsobj[1]['nth']:
+                                        break
+
+                    if not n:
+                        continue
+
+                    # sent to n.senderaddr
+                    # remove n from pendingReqsFromCli
+                    soc = socket.socket(type = socket.SOCK_DGRAM)
+                    instanceid = jsobj[1]['owner'] + jsobj[1]['type'] + jsobj[1]['nth']
+                    ackshutdownins = CMDClientAgent.ack_shutdownInstance(
+                                                jsobj[1]['status'],
+                                                jsobj[1]['msg'])
+                    soc.sendto(ackshutdownins, n.senderaddr)
+                    pendingReqsFromCli.nodes.remove(n)
+                    pendingReqsFromCli.unlock()
 
 
     def dump(self):

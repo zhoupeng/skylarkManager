@@ -116,6 +116,33 @@ class CMDClientAgent:
         
         return json.dumps(ack)
 
+    @staticmethod
+    def cmd_shutdownInstance(owner, type, nth):
+        """
+        @type owner: str
+        @param owner: the owner of vm
+        @type type: str
+        @param type: the type of instance (e.g. winxp, word)
+        @type nth: str
+        @param nth: which one?
+        """
+        req = [CMDClientAgent.shutdowninstance, {'owner': owner,
+                                                 'type': type,
+                                                 'nth': nth}]
+        return json.dumps(req)
+
+    @staticmethod
+    def ack_shutdownInstance(status, msg):
+        """ Response to webfront client
+
+        @type status: str
+        @param status: success or fail(SUCCESS, FAIL)
+        @type msg: str
+        @param msg: describe the status in detail
+        """
+        ack = [CMDClientAgent.shutdowninstance, {'status': status,
+                                                 'msg': msg}]
+        return json.dumps(ack)
 
 class CMDHostAgent:
     # host join, host <-(ack)---(req)-> agent
@@ -127,6 +154,9 @@ class CMDHostAgent:
     # instance creating from snapshot(Xen checkpoint file)
     # agent <-(ack)---(req)-> host
     newinstancebysnapshot = CMDClientAgent.newinstancebysnapshot
+    # shutdown the instance, delete the snapshot (if exist) but keep the image
+    # agent <-(ack)---(req)-> host
+    shutdowninstance = CMDClientAgent.shutdowninstance
 
     @staticmethod
     def cmd_join(uuid, **hostmisc):
@@ -206,6 +236,7 @@ class CMDHostAgent:
 
         return json.dumps(r)
 
+
     @staticmethod
     def ack_createInstance(uuid, **instance):
         """ ack to request to create an instance.
@@ -262,4 +293,56 @@ class CMDHostAgent:
 
         return json.dumps(ack)
 
+    @staticmethod
+    def cmd_shutdownInstance(uuid, owner, type, nth):
+        """ request to shutdown an instance
+        agent -> host
+
+        In fact, we use 'owner type nth' to find the 
+        unique name for an instance,
+        we don't take care user info except in webfront.
+
+        @type uuid: str
+        @param uuid: the uuid of the host
+        @type owner: str
+        @param owner: the owner of this instance
+        @type type: str
+        @params type: the type of this instance(winxp, word ...)
+        @type nth: str
+        @params nth: how many now (0, 1, ...)
+        """
+        r = [CMDHostAgent.shutdowninstance,
+             {'uuid': uuid,
+              'owner': owner,
+              'type': type,
+              'nth': nth}]
+
+        return json.dumps(r)
+
+    @staticmethod
+    def ack_shutdownInstance(uuid, status, msg, owner, type, nth):
+        """ ack to request to shutdown an instance.
+        host -> agent
+
+        @type uuid: str
+        @param uuid: the uuid of the host
+        @type status: str
+        @param status: success or fail(SUCCESS, FAIL)
+        @type msg: str
+        @param msg: describe the status in detail
+        @type owner: str
+        @param owner: the owner of this instance
+        @type type: str
+        @params type: the type of this instance(winxp, word ...)
+        @type nth: str
+        @params nth: which one?
+        """
+        ack = [CMDHostAgent.shutdowninstance, {"uuid": uuid,
+                                               "status": status,
+                                               "msg": msg,
+                                               "owner": owner,
+                                               "type": type,
+                                               "nth": nth}]
+
+        return json.dumps(ack)
 

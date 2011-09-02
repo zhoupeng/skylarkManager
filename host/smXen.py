@@ -362,6 +362,28 @@ MEM(k) MEM(%)  MAXMEM(k) MAXMEM(%) VCPUS NETS NETTX(k) NETRX(k) VBDS   VBD_OO\
         ins = self._runXmResotre(ckp, vmName, spicehost, spiceport)
         return ins
 
+    @staticmethod
+    def _runXmShutdownInstance(instanceid):
+        """ Helper function for L{shutdownInstance}
+
+        @type instanceid: str
+        @param instanceid: the actual name of an instance
+        """
+        res = utilsProcess.RunCmd(["xm", "shutdown", instanceid])
+
+        if res.failed:
+            print "xm shutdown %s failed, reason:%s" % (instanceid,
+                                                        res.fail_reason)
+            return None
+        return res
+
+    def shutdownInstance(self, instanceid):
+        """ shutdown the vm instance (instanceid)
+
+        @type instanceid: str
+        @param instanceid: the actual name of an instance
+        """
+        return self._runXmShutdownInstance(instanceid)
 
     def verify(self):
         """Verify the hypervisor.

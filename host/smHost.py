@@ -260,5 +260,34 @@ class AgentCMDThread(threading.Thread):
                                        spiceport = 0)
 
                     self.host.sock.send(acknewins)
+                elif jsobj[0] == CMDHostAgent.shutdowninstance:
+                    if self.host.getUUID() != jsobj[1]['uuid']:
+                        # ignore reqs shouldn't to me
+                        continue 
+                    # calculate instance name(instance id)
+                    # Just for test temporarily 
+                    instanceid = jsobj[1]['owner'] + jsobj[1]['nth']
+                    instanceid += jsobj[1]['type']
+                    import uuid
+                    import md5
+                    instanceid = str(uuid.UUID(bytes = md5.new(instanceid).digest())) 
+                    ret = self.host.node.shutdownInstance(instanceid)
 
+                    status = None
+                    msg = ''
+                    if not ret:
+                        print "AgentCMDThread: shutdown instance failed"
+                        status = Status.FAIL
+                        msg = 'failed to shutdown instance'
+                    else:
+                        status = Status.SUCCESS,
+                        msg = 'shutdow instance successfully'
+                    ackshutdownins = CMDHostAgent.ack_shutdownInstance(
+                                        self.host.getUUID(),
+                                        status = status,
+                                        msg = msg,
+                                        owner = jsobj[1]['owner'],
+                                        type = jsobj[1]['type'],
+                                        nth = jsobj[1]['nth'])
+                    self.host.sock.send(ackshutdownins)
 

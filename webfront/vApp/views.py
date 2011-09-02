@@ -76,6 +76,10 @@ def api_vapp(request):
         type = jsobj[1]['type']
         jsstr = newInstanceBySnapshot(uname, passwd, type)
         return HttpResponse(jsstr, mimetype = 'application/json')
+    elif cmd == CMDvApp.shutdowninstance:
+        instanceid = jsobj[1]['instanceid']
+        jsstr = shutdownInstance(uname, passwd, instanceid)
+        return HttpResponse(jsstr, mimetype = 'application/json')
 
 def reqInstance(username, passwd, type):
     """request an instance, it will create one when username haven't
@@ -165,7 +169,7 @@ def startInsance(username, passwd, instanceid):
     pass
 
 def shutdownInstance(username, passwd, instanceid):
-    """shutdown an instance
+    """shutdown an instance (OrderState.STOPED)
     
     @type username: str
     @param username: user name
@@ -174,7 +178,42 @@ def shutdownInstance(username, passwd, instanceid):
     @type instanceid: str
     @param instanceid: the id of the instance
     """
-    pass
+    user = auth.authenticate(username = username, password = passwd)
+    if not user:
+        return CMDvApp.ack_shutdownInstance(Status.FAIL,
+                                            'invalid username or passord')
+
+    od_qs = Order.objects.filter(user = user)
+    od = None
+    for i in od_qs:
+        if instanceid == i.instanceID():
+            od = i 
+            break
+
+    if not od:
+        return CMDvApp.ack_shutdownInstance(Status.FAIL,
+                               "the instance %s doesn't exist" % instanceid)
+    shutdownins = CMDClientAgent.cmd_shutdownInstance(username,
+                                                      od.service.type,
+                                                      "%s" % od.num)
+    soc = socket.socket(type = socket.SOCK_DGRAM)
+    soc.sendto(shutdownins, (CLIENTSRV_HOST, CLIENTSRV_PORT))
+
+    ackShutDown = soc.recv(128)
+    if not ackShutDown:
+        return CMDvApp.ack_shutdownInstance(Status.FAIL,
+                                            'internal err')
+    jsobj = json.loads(ackShutDown)
+    
+    if jsobj[1]['status'] == Status.FAIL:
+        return CMDvApp.ack_shutdownInstance(jsobj[1]['status'],
+                                            jsobj[1]['msg'])
+
+    od.state = OrderState.STOPED
+    od.save()
+
+    return CMDvApp.ack_shutdownInstance(jsobj[1]['status'],
+                                        jsobj[1]['msg'])
 
 def saveInstance(username, passwd, instanceid):
     """Save the state of an instance then shutdown
