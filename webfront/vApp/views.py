@@ -69,6 +69,14 @@ def api_vapp(request):
     uname = jsobj[1]['username']
     passwd = jsobj[1]['passwd']
 
+    if cmd not in [CMDvApp.reqinstance, CMDvApp.createimage,
+                   CMDvApp.createinstance, CMDvApp.newinstancebysnapshot,
+                   CMDvApp.releaseinstance, CMDvApp.startinstance,
+                   CMDvApp.shutdowninstance, CMDvApp.saveinstance,
+                   CMDvApp.restoreinstance, CMDvApp.getinstanceinfo]:
+        jsstr = CMDAccount.ack_generalResp(Status.FAIL, "Invalid WebAPI")
+        return HttpResponse(jsstr, mimetype = 'application/json')
+
     if cmd == CMDvApp.reqinstance:
         jsstr = reqInstance(uname, passwd, type)
         return HttpResponse(ret, mimetype = 'application/json')

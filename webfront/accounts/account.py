@@ -46,6 +46,7 @@ def api_account(request):
     # get data from different format ...
     body = request.read()
      
+    print body # for debug     
     # translate different format to jsobj ...
     data = body
     jsobj = json.loads(data)
