@@ -272,7 +272,7 @@ def newInstanceBySnapshot(username, passwd, type):
     user = auth.authenticate(username = username, password = passwd)
     if not user:
         return CMDvApp.ack_newInstanceBySnapshot(Status.FAIL,
-                                                 'invalid username or passord')
+                                                 'invalid username or password')
     
     od_qs = Order.objects.filter(user = user)
     od = None
