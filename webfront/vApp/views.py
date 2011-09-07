@@ -292,6 +292,10 @@ def newInstanceBySnapshot(username, passwd, type):
             return CMDvApp.ack_newInstanceBySnapshot(Status.FAIL,
                                                      'internal err')
         jsobj = json.loads(ackNewInsBySnap)
+        if jsobj[1]['status'] == Status.FAIL:
+            return CMDvApp.ack_newInstanceBySnapshot(Status.FAIL,
+                                                     'internal err')
+
         instanceid = "%s%s%s" % (username, od.service.type, od.num)
         spicehost = jsobj[1]['spicehost']
         spiceport = jsobj[1]['spiceport']
