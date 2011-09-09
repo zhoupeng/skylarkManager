@@ -212,8 +212,9 @@ def getAppInfo(username, passwd, instanceid):
     if user is not None:
         od_qs = Order.objects.filter(user = user)
         od = None
-        for od in od_qs:
-            if od.instanceID() == instanceid:
+        for i in od_qs:
+            if i.instanceID() == instanceid:
+                od = i
                 break
         if not od:
             return CMDAccount.ack_getAppInfo(Status.FAIL,
