@@ -72,12 +72,14 @@ class Order(models.Model):
         3-stoped, this service stops running without snapshot,
                   but the image kept
         4-canceled, this order is canceled, the image and snapshot are released
+    @field huuid: the uuid of the host
     """
 
     user = models.ForeignKey(User)
     service = models.ForeignKey(Service)
     num = models.IntegerField()
     state = models.IntegerField()
+    huuid = models.CharField(max_length = 50, null = True)
 
     def instanceID(self):
         """get the name of the instance corresponding to an order record
