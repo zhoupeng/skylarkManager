@@ -121,7 +121,7 @@ class CMDClientAgent:
         return json.dumps(ack)
 
     @staticmethod
-    def cmd_shutdownInstance(owner, type, nth):
+    def cmd_shutdownInstance(owner, type, nth, hostuuid):
         """
         @type owner: str
         @param owner: the owner of vm
@@ -129,10 +129,13 @@ class CMDClientAgent:
         @param type: the type of instance (e.g. winxp, word)
         @type nth: str
         @param nth: which one?
+        @type hostuuid: str
+        @param hostuuid: uuid of node hosting this instance
         """
         req = [CMDClientAgent.shutdowninstance, {'owner': owner,
                                                  'type': type,
-                                                 'nth': nth}]
+                                                 'nth': nth,
+                                                 'hostuuid': hostuuid}]
         return json.dumps(req)
 
     @staticmethod

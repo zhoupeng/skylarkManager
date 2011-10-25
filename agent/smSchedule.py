@@ -100,13 +100,33 @@ class Scheduler:
         """
         return self.__method 
 
-    def schedule(self, hosts):
+    def schedule(self, hosts, **kwargs):
         """ Determine the node to schedule
 
         @type hosts: HostsStruct
         @param hosts: All of the hosts joined
+        @type kwargs: dict
+        @param kwargs: reserved for sched method needing extra info.
         """
         node = None
+
+        if (not hosts.nodes) or (not len(hosts.nodes)):
+            return None
+
+        if kwargs:
+            if 'hostuuid' in kwargs.keys():
+                hostuuid = kwargs["hostuuid"]
+                if hostuuid:
+                    hosts.lock()
+                    for i in hosts.nodes:
+                        if hostuuid == i.uuid
+                            node = i
+                            break
+                    hosts.unlock()
+                    if not node:
+                        print "Schedule: no host matches %s" % hostuuid
+
+                    return node
 
         hosts.lock()
         try:
@@ -123,8 +143,6 @@ class Scheduler:
         @type nodes: list
         @param nodes: The list of nodes
         """
-        if (not nodes) or (not len(nodes)):
-            return None
 
         self.__cyclic_index = self.__cyclic_index % len(nodes)
         self.__cyclic_index = self.__cyclic_index + 1
@@ -138,8 +156,6 @@ class Scheduler:
         @type nodes: list
         @param nodes: The list of nodes
         """
-        if (not nodes) or (not len(nodes)):
-            return None
 
         nodes.sort(key = lambda n: n.latestReport['memory_dom0'] +
                                    n.latestReport['memory_free'],
@@ -152,8 +168,6 @@ class Scheduler:
         @type nodes: list
         @param nodes: The list of nodes
         """
-        if (not nodes) or (not len(nodes)):
-            return None
 
         # FIXME: How to get MIPS effectively?
         # MIPS is more reasonable than cpu frequency.

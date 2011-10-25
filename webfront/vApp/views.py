@@ -203,7 +203,8 @@ def shutdownInstance(username, passwd, instanceid):
                                "the instance %s doesn't exist" % instanceid)
     shutdownins = CMDClientAgent.cmd_shutdownInstance(username,
                                                       od.service.type,
-                                                      "%s" % od.num)
+                                                      "%s" % od.num,
+                                                      od.huuid)
     soc = socket.socket(type = socket.SOCK_DGRAM)
     soc.sendto(shutdownins, (CLIENTSRV_HOST, CLIENTSRV_PORT))
 

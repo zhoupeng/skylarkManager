@@ -119,7 +119,7 @@ class Client(threading.Thread):
                 h.sock.send(req2host)
             elif jsobj[0] == CMDClientAgent.shutdowninstance:
                 # TODO FIXME: find the host running this instance
-                h = self.sched.schedule(hosts)
+                h = self.sched.schedule(hosts, hostuuid = jsobj[1]('hostuuid'))
 
                 if not h:
                     print "Client: error, scheded h is None"
