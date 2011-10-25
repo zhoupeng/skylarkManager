@@ -303,6 +303,7 @@ def newInstanceBySnapshot(username, passwd, type):
                 'spicehost': spicehost, 'spiceport': spiceport}
 
         od.state = OrderState.RUNNING
+        od.huuid = jsobj[1]['hostuuid']
         od.save()
 
         return CMDvApp.ack_newInstanceBySnapshot(jsobj[1]['status'],

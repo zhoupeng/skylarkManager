@@ -91,13 +91,16 @@ class CMDClientAgent:
         return json.dumps(req)
 
     @staticmethod
-    def ack_newInstanceBySnapshot(status, msg, instanceid, spicehost, spiceport):
+    def ack_newInstanceBySnapshot(status, msg, hostuuid, instanceid,
+                                  spicehost, spiceport):
         """ Response to webfront client
        
         @type status: str
         @param status: success or fail(SUCCESS, FAIL)
         @type msg: str
         @param msg: describe the status in detail
+        @type hostuuid: str
+        @param hostuuid: the host running this instance
         @type instanceid: str
         @param instanceid: the name of instance(ownertypenth),
         it's only necessary to keep this name unique, we don't need to transfer
@@ -110,6 +113,7 @@ class CMDClientAgent:
         ack = [CMDClientAgent.newinstancebysnapshot,
                {'status': status,
                 'msg': msg,
+                'hostuuid': hostuuid,
                 'instanceid': instanceid,
                 'spicehost': spicehost,
                 'spiceport': spiceport}]

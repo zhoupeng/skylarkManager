@@ -146,6 +146,7 @@ class Host(threading.Thread):
                     acknewinsbysnapshot = CMDClientAgent.ack_newInstanceBySnapshot(
                                                 jsobj[1]['status'],
                                                 jsobj[1]['msg'], 
+                                                jsobj[1]['uuid'],
                                                 instanceid,
                                                 jsobj[1]['spicehost'],
                                                 jsobj[1]['spiceport'])
