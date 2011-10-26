@@ -48,7 +48,11 @@ class Host(object):
             raise errors.PortError("Port number:%d is invalid." % aggentPort)
 
         self.sock = socket.socket(type = socket.SOCK_STREAM)
-        self.node = smXen.XenNode()
+        
+        self.node = None
+        if HOST_TYPE == XEN_TYPE:
+            self.node = smXen.XenNode()
+
         self.__uuid = smIO.NewUUID()
         # periodical resource reporter
         self.rsReporter = None
