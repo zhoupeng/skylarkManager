@@ -321,8 +321,8 @@ MEM(k) MEM(%)  MAXMEM(k) MAXMEM(%) VCPUS NETS NETTX(k) NETRX(k) VBDS   VBD_OO\
 
 
     @staticmethod
-    def _runXmResotre(checkpointfile, vmName, spicehost, spiceport):
-        """Helper function for L{newInstanceBySnapshot, restore}
+    def _runXmRestore(checkpointfile, vmName, spicehost, spiceport):
+        """Helper function for L{newInstanceBySnapshot, restoreInstance}
         to run "xm restore".
         Assume checkpointfile is ready
         
@@ -348,7 +348,7 @@ MEM(k) MEM(%)  MAXMEM(k) MAXMEM(%) VCPUS NETS NETTX(k) NETRX(k) VBDS   VBD_OO\
         # Have a copy from the checkpoint file template,
         # then restore from the copy?
         ckp = "%s/%s.ckp" % (HV_CKP_TEMPLATE_PATH, vmName)
-        ins = self._runXmResotre(ckp, vmName, spicehost, spiceport)
+        ins = self._runXmRestore(ckp, vmName, spicehost, spiceport)
         return ins
 
 
@@ -359,7 +359,7 @@ MEM(k) MEM(%)  MAXMEM(k) MAXMEM(%) VCPUS NETS NETTX(k) NETRX(k) VBDS   VBD_OO\
         Assume the vm's checkpoint file is saved before
         """
         ckp = "%s/%s.ckp" % (HV_DISK_IMG_PATH, vmName)
-        ins = self._runXmResotre(ckp, vmName, spicehost, spiceport)
+        ins = self._runXmRestore(ckp, vmName, spicehost, spiceport)
         return ins
 
     @staticmethod
