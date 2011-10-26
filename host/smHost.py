@@ -25,6 +25,7 @@ import smObjects
 import smLog
 import sys
 from smTypes import *
+import os
 
 class Host(object):
     """
@@ -54,6 +55,17 @@ class Host(object):
         # thread to response to command from agent.
         self.agentCMDThread = None
         self.running = False
+        self.init_sys_dir()
+
+    def init_sys_dir(self):
+        vms_cfg_dir = HV_VM_CONFIG_PATH
+        vms_disk_dir = HV_DISK_IMG_PATH
+        ckp_tmp_path = HV_CKP_TEMPLATE_PATH
+
+        dirs = [vms_cfg_dir, vms_disk_dir, ckp_tmp_path]
+        for d in dirs:
+            if not os.path.exists(d):
+                os.makedirs(d)
 
     def getType(self):
         """ get the type of this host node
