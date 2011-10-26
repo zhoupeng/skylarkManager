@@ -103,11 +103,12 @@ class Host(threading.Thread):
                     # TODO refactoring
                     pendingReqsFromCli.lock()
                     n = None # n is ClientReq
-                    for n in pendingReqsFromCli.nodes:
-                        if n.request[0] == jsobj[0]:
-                            if n.request[1]['owner'] == jsobj[1]['owner']:
-                                if n.request[1]['type'] == jsobj[1]['type']:
-                                    if n.request[1]['nth'] == jsobj[1]['nth']:
+                    for i in pendingReqsFromCli.nodes:
+                        if i.request[0] == jsobj[0]:
+                            if i.request[1]['owner'] == jsobj[1]['owner']:
+                                if i.request[1]['type'] == jsobj[1]['type']:
+                                    if i.request[1]['nth'] == jsobj[1]['nth']:
+                                        n = i
                                         break
 
                     if not n:
@@ -129,11 +130,12 @@ class Host(threading.Thread):
                     # TODO refactoring
                     pendingReqsFromCli.lock()
                     n = None # n is ClientReq
-                    for n in pendingReqsFromCli.nodes:
-                        if n.request[0] == jsobj[0]:
-                            if n.request[1]['owner'] == jsobj[1]['owner']:
-                                if n.request[1]['type'] == jsobj[1]['type']:
-                                    if n.request[1]['nth'] == jsobj[1]['nth']:
+                    for i in pendingReqsFromCli.nodes:
+                        if i.request[0] == jsobj[0]:
+                            if i.request[1]['owner'] == jsobj[1]['owner']:
+                                if i.request[1]['type'] == jsobj[1]['type']:
+                                    if i.request[1]['nth'] == jsobj[1]['nth']:
+                                        n = i
                                         break
 
                     if not n:
@@ -157,11 +159,12 @@ class Host(threading.Thread):
                     # TODO refactoring
                     pendingReqsFromCli.lock()
                     n = None # n is ClientReq
-                    for n in pendingReqsFromCli.nodes:
-                        if n.request[0] == jsobj[0]:
-                            if n.request[1]['owner'] == jsobj[1]['owner']:
-                                if n.request[1]['type'] == jsobj[1]['type']:
-                                    if n.request[1]['nth'] == jsobj[1]['nth']:
+                    for i in pendingReqsFromCli.nodes:
+                        if i.request[0] == jsobj[0]:
+                            if i.request[1]['owner'] == jsobj[1]['owner']:
+                                if i.request[1]['type'] == jsobj[1]['type']:
+                                    if i.request[1]['nth'] == jsobj[1]['nth']:
+                                        n = i
                                         break
 
                     if not n:
