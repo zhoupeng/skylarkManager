@@ -151,6 +151,48 @@ class CMDClientAgent:
                                                  'msg': msg}]
         return json.dumps(ack)
 
+    @staticmethod
+    def cmd_restoreInstance(owner, type, nth, hostuuid):
+        """
+        @type owner: str
+        @param owner: the owner of vm
+        @type type: str
+        @param type: the type of instance (e.g. winxp, word)
+        @type nth: str
+        @param nth: which one?
+        @type hostuuid: str
+        @param hostuuid: uuid of node hosting this instance
+        """
+        req = [CMDClientAgent.restoreinstance, {'owner': owner,
+                                                'type': type,
+                                                'nth': nth,
+                                                'hostuuid': hostuuid}]
+        return json.dumps(req)
+
+    @staticmethod
+    def ack_restoreInstance(status, msg, instanceid, spicehost, spiceport):
+        """ Response to webfront client
+
+        @type status: str
+        @param status: success or fail(SUCCESS, FAIL)
+        @type msg: str
+        @param msg: describe the status in detail
+        @type instanceid: str
+        @param instanceid: the name of instance(ownertypenth),
+        it's only necessary to keep this name unique,
+        we don't need to transfer info from the instanceid(vm name)
+        @type spicehost: str
+        @param spicehost: the listen ip addr of spice server
+        @type spiceport: int
+        @param spiceport: the listen port of spice server
+        """
+        ack = [CMDClientAgent.restoreinstance, {'status': status,
+                                               'msg': msg,
+                                               'instanceid': instanceid,
+                                               'spicehost': spicehost,
+                                               'spiceport': spiceport}]
+        return json.dumps(ack)
+
 class CMDHostAgent:
     # host join, host <-(ack)---(req)-> agent
     join = "HOSTJOIN"
@@ -164,6 +206,9 @@ class CMDHostAgent:
     # shutdown the instance, delete the snapshot (if exist) but keep the image
     # agent <-(ack)---(req)-> host
     shutdowninstance = CMDClientAgent.shutdowninstance
+    # restore the instance
+    # agent <-(ack)---(req)-> host
+    restoreinstance = CMDClientAgent.restoreinstance
 
     @staticmethod
     def cmd_join(uuid, **hostmisc):
@@ -353,3 +398,44 @@ class CMDHostAgent:
 
         return json.dumps(ack)
 
+    @staticmethod
+    def cmd_restoreInstance(uuid, owner, type, nth):
+        """ request to restore the instance from it's snapshot file
+        agent -> host
+
+        In fact, we use 'owner type nth' to construct the 
+        unique name for an instance,
+        we don't take care user info except in webfront.
+
+        @type uuid: str
+        @param uuid: the uuid of the host,
+        let the host to check if this req is to itself
+        @type owner: str
+        @param owner: the owner of this instance
+        @type type: str
+        @params type: the type of this instance(winxp, word ...)
+        @type nth: str
+        @params nth: how many now (0, 1, ...)
+        """
+        r = [CMDHostAgent.restoreinstance,
+             {'uuid': uuid,
+              'owner': owner,
+              'type': type,
+              'nth': nth}]
+
+        return json.dumps(r)
+
+    @staticmethod
+    def ack_restoreInstance(uuid, **instance):
+        """ ack to request to restore itself from it's snapshot.
+        host -> agent
+
+        @type uuid: str
+        @param uuid: the uuid of the host
+        @type instance: dict{status, msg, owner, type, nth, spicehost, spiceport}
+        @param instance: instance's appearance to client
+        """
+        instance.update(uuid = uuid)
+        ack = [CMDHostAgent.restoreinstance, instance]
+
+        return json.dumps(ack)

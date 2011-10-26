@@ -118,7 +118,6 @@ class Client(threading.Thread):
                                                               jsobj[1]['nth'])
                 h.sock.send(req2host)
             elif jsobj[0] == CMDClientAgent.shutdowninstance:
-                # TODO FIXME: find the host running this instance
                 h = self.sched.schedule(hosts, hostuuid = jsobj[1]('hostuuid'))
 
                 if not h:
@@ -130,4 +129,15 @@ class Client(threading.Thread):
                                                              jsobj[1]['type'],
                                                              jsobj[1]['nth'])
                 h.sock.send(req2host)
+            elif jsobj[0] == CMDClientAgent.restoreinstance:
+                h = self.sched.schedule(hosts, hostuuid = jsobj[1]('hostuuid'))
 
+                if not h:
+                    print "Client: error, scheded host is None"
+                    continue
+
+                req2host = CMDHostAgent.cmd_restoreInstance(h.getUUID(),
+                                                            jsobj[1]['owner'],
+                                                            jsobj[1]['type'],
+                                                            jsobj[1]['nth'])
+                h.sock.send(req2host)

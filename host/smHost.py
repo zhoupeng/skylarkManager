@@ -306,4 +306,56 @@ class AgentCMDThread(threading.Thread):
                                         type = jsobj[1]['type'],
                                         nth = jsobj[1]['nth'])
                     self.host.sock.send(ackshutdownins)
+                elif jsobj[0] == CMDHostAgent.restoreinstance:
+                    if self.host.getUUID() != jsobj[1]['uuid']:
+                        # ignore reqs shouldn't to me
+                        continue 
 
+                    hip = smNet.IPAddress.get_ip_address_nic(SPICE_NI)
+
+                    if not hip:
+                        print "Fail to get ip of NI(%s):%s:%s" % (SPICE_NI, __file__,
+                        smLog.__function__())
+                        sys.exit()
+
+                    hport = get_free_port4spice()
+                    # calculate instance name(instance id)
+                    # Consistent instanceid when skylark storage get stable
+                    instanceid = jsobj[1]['owner'] + jsobj[1]['nth']
+                    instanceid += jsobj[1]['type']
+                    inst = self.host.node.restoreInstance(instanceid,
+                                                         hip,
+                                                         hport)
+
+                    status = Status.FAIL
+                    msg = 'failed to restore instance'
+                    spicehost = ''
+                    spiceport = 0
+
+                    if inst:
+                        global instances
+                        inst.owner = jsobj[1]['owner']
+                        inst.type = jsobj[1]['type']
+                        inst.nth = jsobj[1]['nth']
+
+                        instances.lock()
+                        instances.append(inst)
+                        instances.unlock()
+
+                        status = Status.SUCCESS,
+                        msg = 'restore instance successfully'
+                        spicehost = inst.spicehost
+                        spiceport = inst.spiceport
+                    else:
+                        print "AgentCMDThread: restore %s failed" % instanceid
+
+                    ackrestoreins = CMDHostAgent.ack_restoreInstance(
+                                            self.host.getUUID(),
+                                            status = status,
+                                            msg = msg,
+                                            owner = jsobj[1]['owner'],
+                                            type = jsobj[1]['type'],
+                                            nth = jsobj[1]['nth'],
+                                            spicehost = spicehost,
+                                            spiceport = spiceport)
+                    self.host.sock.send(ackrestoreins)

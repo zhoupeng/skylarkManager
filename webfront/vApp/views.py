@@ -88,6 +88,10 @@ def api_vapp(request):
         instanceid = jsobj[1]['instanceid']
         jsstr = shutdownInstance(uname, passwd, instanceid)
         return HttpResponse(jsstr, mimetype = 'application/json')
+    elif cmd == CMDvApp.restoreinstance:
+        instanceid = jsobj[1]['instanceid']
+        jsstr = restoreInstance(uname, passwd, instanceid)
+        return HttpResponse(jsstr, mimetype = 'application/json')
 
 def reqInstance(username, passwd, type):
     """request an instance, it will create one when username haven't
@@ -246,7 +250,48 @@ def restoreInstance(username, passwd, instanceid):
     @type instanceid: str
     @param instanceid: the id of the instance
     """
-    pass
+    user = auth.authenticate(username = username, password = passwd)
+    if not user:
+        return CMDvApp.ack_restoreInstance(Status.FAIL,
+                                            'invalid username or passord')
+
+    od_qs = Order.objects.filter(user = user)
+    od = None
+    for i in od_qs:
+        if instanceid == i.instanceID():
+            od = i 
+            break
+
+    if not od:
+        return CMDvApp.ack_restoreInstance(Status.FAIL,
+                              "the instance %s doesn't exist" % instanceid)
+
+    if od.state != OrderState.SAVED:
+         return CMDvApp.ack_restoreInstance(Status.FAIL,
+                                 "%s not in SAVED state" % instanceid)
+
+    restoreins = CMDClientAgent.cmd_restoreInstance(username,
+                                                   od.service.type,
+                                                   "%s" % od.num,
+                                                   od.huuid)
+    soc = socket.socket(type = socket.SOCK_DGRAM)
+    soc.sendto(restoreins, (CLIENTSRV_HOST, CLIENTSRV_PORT))
+
+    ackRestore = soc.recv(128)
+    if not ackRestore:
+        return CMDvApp.ack_restoreInstance(Status.FAIL,
+                                           'internal err')
+    jsobj = json.loads(ackRestore)
+    
+    if jsobj[1]['status'] == Status.FAIL:
+        return CMDvApp.ack_restoreInstance(jsobj[1]['status'],
+                                           jsobj[1]['msg'])
+
+    od.state = OrderState.RUNNING
+    od.save()
+
+    return CMDvApp.ack_restoreInstance(jsobj[1]['status'],
+                                       jsobj[1]['msg'])
 
 def getInstanceInfo(username, passwd, instanceid):
     """get the detail info of an instance no matter running or stoped
