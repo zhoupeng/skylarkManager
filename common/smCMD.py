@@ -152,6 +152,37 @@ class CMDClientAgent:
         return json.dumps(ack)
 
     @staticmethod
+    def cmd_saveInstance(owner, type, nth, hostuuid):
+        """
+        @type owner: str
+        @param owner: the owner of vm
+        @type type: str
+        @param type: the type of instance (e.g. winxp, word)
+        @type nth: str
+        @param nth: which one?
+        @type hostuuid: str
+        @param hostuuid: uuid of node hosting this instance
+        """
+        req = [CMDClientAgent.saveinstance, {'owner': owner,
+                                             'type': type,
+                                             'nth': nth,
+                                             'hostuuid': hostuuid}]
+        return json.dumps(req)
+
+    @staticmethod
+    def ack_saveInstance(status, msg):
+        """ Response to webfront client
+
+        @type status: str
+        @param status: success or fail(SUCCESS, FAIL)
+        @type msg: str
+        @param msg: describe the status in detail
+        """
+        ack = [CMDClientAgent.saveinstance, {'status': status,
+                                             'msg': msg}]
+        return json.dumps(ack)
+
+    @staticmethod
     def cmd_restoreInstance(owner, type, nth, hostuuid):
         """
         @type owner: str
@@ -209,6 +240,9 @@ class CMDHostAgent:
     # restore the instance
     # agent <-(ack)---(req)-> host
     restoreinstance = CMDClientAgent.restoreinstance
+    # save the instance
+    # agent <-(ack)---(req)-> host
+    saveinstance = CMDClientAgent.saveinstance
 
     @staticmethod
     def cmd_join(uuid, **hostmisc):
@@ -395,6 +429,61 @@ class CMDHostAgent:
                                                "owner": owner,
                                                "type": type,
                                                "nth": nth}]
+
+        return json.dumps(ack)
+
+    @staticmethod
+    def cmd_saveInstance(uuid, owner, type, nth):
+        """ request to save an instance
+        agent -> host
+
+        In fact, we use 'owner type nth' to find the 
+        unique name for an instance,
+        we don't take care user info except in webfront.
+
+        @type uuid: str
+        @param uuid: the uuid of the host
+        reserved, let the host to check if this req is to itself
+        @type owner: str
+        @param owner: the owner of this instance
+        @type type: str
+        @params type: the type of this instance(winxp, word ...)
+        @type nth: str
+        @params nth: how many now (0, 1, ...)
+        """
+        r = [CMDHostAgent.saveinstance,
+             {'uuid': uuid,
+              'owner': owner,
+              'type': type,
+              'nth': nth}]
+
+        return json.dumps(r)
+
+    @staticmethod
+    def ack_saveInstance(uuid, status, msg, owner, type, nth):
+        """ ack to request to save an instance.
+        host -> agent
+
+        @type uuid: str
+        @param uuid: the uuid of the host
+        reserved, let to check if host matches
+        @type status: str
+        @param status: success or fail(SUCCESS, FAIL)
+        @type msg: str
+        @param msg: describe the status in detail
+        @type owner: str
+        @param owner: the owner of this instance
+        @type type: str
+        @params type: the type of this instance(winxp, word ...)
+        @type nth: str
+        @params nth: which one?
+        """
+        ack = [CMDHostAgent.saveinstance, {"uuid": uuid,
+                                           "status": status,
+                                           "msg": msg,
+                                           "owner": owner,
+                                           "type": type,
+                                           "nth": nth}]
 
         return json.dumps(ack)
 

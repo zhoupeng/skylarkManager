@@ -92,6 +92,10 @@ def api_vapp(request):
         instanceid = jsobj[1]['instanceid']
         jsstr = restoreInstance(uname, passwd, instanceid)
         return HttpResponse(jsstr, mimetype = 'application/json')
+    elif cmd == CMDvApp.saveinstance:
+        instanceid = jsobj[1]['instanceid']
+        jsstr = saveInstance(uname, passwd, instanceid)
+        return HttpResponse(jsstr, mimetype = 'application/json')
 
 def reqInstance(username, passwd, type):
     """request an instance, it will create one when username haven't
@@ -238,7 +242,48 @@ def saveInstance(username, passwd, instanceid):
     @type instanceid: str
     @param instanceid: the id of the instance
     """
-    pass
+    user = auth.authenticate(username = username, password = passwd)
+    if not user:
+        return CMDvApp.ack_saveInstance(Status.FAIL,
+                                        'invalid username or passord')
+
+    od_qs = Order.objects.filter(user = user)
+    od = None
+    for i in od_qs:
+        if instanceid == i.instanceID():
+            od = i 
+            break
+
+    if not od:
+        return CMDvApp.ack_saveInstance(Status.FAIL,
+                               "the instance %s doesn't exist" % instanceid)
+
+    if od.state != OrderState.RUNNING:
+         return CMDvApp.ack_saveInstance(Status.FAIL,
+                                 "%s not in RUNNING state" % instanceid)
+
+    saveins = CMDClientAgent.cmd_saveInstance(username,
+                                              od.service.type,
+                                              "%s" % od.num,
+                                              od.huuid)
+    soc = socket.socket(type = socket.SOCK_DGRAM)
+    soc.sendto(saveins, (CLIENTSRV_HOST, CLIENTSRV_PORT))
+
+    ackSaveIns = soc.recv(128)
+    if not ackSaveIns:
+        return CMDvApp.ack_saveInstance(Status.FAIL,
+                                        'internal err')
+    jsobj = json.loads(ackSaveIns)
+    
+    if jsobj[1]['status'] == Status.FAIL:
+        return CMDvApp.ack_saveInstance(jsobj[1]['status'],
+                                        jsobj[1]['msg'])
+
+    od.state = OrderState.SAVED
+    od.save()
+
+    return CMDvApp.ack_saveInstance(jsobj[1]['status'],
+                                    jsobj[1]['msg'])
 
 def restoreInstance(username, passwd, instanceid):
     """restore an instance from the state saved before

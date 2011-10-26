@@ -306,6 +306,34 @@ class AgentCMDThread(threading.Thread):
                                         type = jsobj[1]['type'],
                                         nth = jsobj[1]['nth'])
                     self.host.sock.send(ackshutdownins)
+                elif jsobj[0] == CMDHostAgent.saveinstance:
+                    if self.host.getUUID() != jsobj[1]['uuid']:
+                        # ignore reqs shouldn't to me
+                        continue 
+                    # calculate instance name(instance id)
+                    # we'll use consistent instanceid
+                    # (just pass as a paremeter),
+                    # when skylark storage get transparent
+                    instanceid = jsobj[1]['owner'] + jsobj[1]['nth']
+                    instanceid += jsobj[1]['type']
+
+                    ret = self.host.node.saveInstance(instanceid)
+
+                    status = Status.FAIL
+                    msg = 'fail to save instance'
+                    if ret:
+                        status = Status.SUCCESS,
+                        msg = 'save instance successfully'
+                    else:
+                        print "AgentCMDThread: save instance failed"
+                    acksaveins = CMDHostAgent.ack_saveInstance(
+                                        self.host.getUUID(),
+                                        status = status,
+                                        msg = msg,
+                                        owner = jsobj[1]['owner'],
+                                        type = jsobj[1]['type'],
+                                        nth = jsobj[1]['nth'])
+                    self.host.sock.send(acksaveins)
                 elif jsobj[0] == CMDHostAgent.restoreinstance:
                     if self.host.getUUID() != jsobj[1]['uuid']:
                         # ignore reqs shouldn't to me
@@ -320,7 +348,9 @@ class AgentCMDThread(threading.Thread):
 
                     hport = get_free_port4spice()
                     # calculate instance name(instance id)
-                    # Consistent instanceid when skylark storage get stable
+                    # we'll use consistent instanceid
+                    # (just pass as a paremeter),
+                    # when skylark storage get transparent
                     instanceid = jsobj[1]['owner'] + jsobj[1]['nth']
                     instanceid += jsobj[1]['type']
                     inst = self.host.node.restoreInstance(instanceid,

@@ -359,6 +359,7 @@ MEM(k) MEM(%)  MAXMEM(k) MAXMEM(%) VCPUS NETS NETTX(k) NETRX(k) VBDS   VBD_OO\
         Assume the vm's checkpoint file is saved before
         """
         ckp = "%s/%s.ckp" % (HV_DISK_IMG_PATH, vmName)
+        # TODO. modify the spiceport(host) fields of the ckp file.
         ins = self._runXmRestore(ckp, vmName, spicehost, spiceport)
         return ins
 
@@ -384,6 +385,43 @@ MEM(k) MEM(%)  MAXMEM(k) MAXMEM(%) VCPUS NETS NETTX(k) NETRX(k) VBDS   VBD_OO\
         @param instanceid: the actual name of an instance
         """
         return self._runXmShutdownInstance(instanceid)
+
+    @staticmethod
+    def _runXmSave(instanceid, ckpfile):
+        """ Helper function for L{saveInstance}
+
+        @type instanceid: str
+        @param instanceid: the actual name of an instance
+        @type ckpfile: str
+        @param ckpfile: the file to save the checkpoint,
+        including the complete path, otherwish the current dir 
+        """
+        res = utilsProcess.RunCmd(["xm", "save", instanceid, ckpfile])
+
+        if res.failed:
+            print "xm save %s failed, reason:%s" % (instanceid,
+                                                    res.fail_reason)
+            return None
+        return res
+
+    def saveInstance(self, instanceid):
+        """ save the vm instance (instanceid)
+
+        @type instanceid: str
+        @param instanceid: the actual name of an instance
+        """
+        ckpfile = "%s/%s.ckp" % (HV_DISK_IMG_PATH, instanceid)
+        # calculate the real vm name to meet skylark storage
+        # calculate instance name(instance id)
+        # we'll use consistent instanceid
+        # (just pass as a paremeter),
+        # when skylark storage get transparent
+
+        import uuid
+        import md5
+        instanceid = str(uuid.UUID(bytes = md5.new(instanceid).digest())) 
+
+        return self._runXmSave(instanceid, ckpfile)
 
     def verify(self):
         """Verify the hypervisor.

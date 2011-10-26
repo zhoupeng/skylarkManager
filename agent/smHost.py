@@ -173,7 +173,6 @@ class Host(threading.Thread):
                     # sent to n.senderaddr
                     # remove n from pendingReqsFromCli
                     soc = socket.socket(type = socket.SOCK_DGRAM)
-                    instanceid = jsobj[1]['owner'] + jsobj[1]['type'] + jsobj[1]['nth']
                     ackshutdownins = CMDClientAgent.ack_shutdownInstance(
                                                 jsobj[1]['status'],
                                                 jsobj[1]['msg'])
@@ -207,7 +206,30 @@ class Host(threading.Thread):
                     soc.sendto(ackrestoreins, n.senderaddr)
                     pendingReqsFromCli.nodes.remove(n)
                     pendingReqsFromCli.unlock()
+                elif jsobj[0] == CMDHostAgent.saveinstance:
+                    # TODO refactoring
+                    pendingReqsFromCli.lock()
+                    n = None # n is ClientReq
+                    for i in pendingReqsFromCli.nodes:
+                        if i.request[0] == jsobj[0]:
+                            if i.request[1]['owner'] == jsobj[1]['owner']:
+                                if i.request[1]['type'] == jsobj[1]['type']:
+                                    if i.request[1]['nth'] == jsobj[1]['nth']:
+                                        n = i
+                                        break
 
+                    if not n:
+                        continue
+
+                    # sent to n.senderaddr
+                    # remove n from pendingReqsFromCli
+                    soc = socket.socket(type = socket.SOCK_DGRAM)
+                    acksaveins = CMDClientAgent.ack_saveInstance(
+                                                jsobj[1]['status'],
+                                                jsobj[1]['msg'])
+                    soc.sendto(acksaveins, n.senderaddr)
+                    pendingReqsFromCli.nodes.remove(n)
+                    pendingReqsFromCli.unlock()
 
     def dump(self):
         smDump.dumpObj(self)
