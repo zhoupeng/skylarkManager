@@ -119,7 +119,7 @@ class Scheduler:
                 if hostuuid:
                     hosts.lock()
                     for i in hosts.nodes:
-                        if hostuuid == i.uuid
+                        if hostuuid == i.uuid:
                             node = i
                             break
                     hosts.unlock()
