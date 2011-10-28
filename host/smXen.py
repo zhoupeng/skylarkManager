@@ -19,6 +19,7 @@ from cStringIO import StringIO
 import smIO
 import smObjects
 import datetime
+from smCheckpoint import *
 
 class XenNode(object):
 
@@ -357,9 +358,25 @@ MEM(k) MEM(%)  MAXMEM(k) MAXMEM(%) VCPUS NETS NETTX(k) NETRX(k) VBDS   VBD_OO\
         Don't use and allow the storage system to parse vmName, keep
         the same as you see.
         Assume the vm's checkpoint file is saved before
+
+        @type vmName: str
+        @param vmName: the actual name of an instance
+        @type spicehost: str
+        @param spicehost: This host's ip for this spice server
+        @type spiceport: int
+        @param spiceport: the port for this spice server
         """
         ckp = "%s/%s.ckp" % (HV_DISK_IMG_PATH, vmName)
-        # TODO. modify the spiceport(host) fields of the ckp file.
+
+        # Adjust(modify) the spiceport(host) fields of the ckp file
+        xckp = XenCheckpoint()
+        if not xckp.init(ckp):
+            return None
+        options = {XenOptions.SPICEHOST: spicehost,
+                   XenOptions.SPICEPORT: str(spiceport)}
+        if not xckp.adjustCKPHead(options):
+            return None
+
         ins = self._runXmRestore(ckp, vmName, spicehost, spiceport)
         return ins
 
