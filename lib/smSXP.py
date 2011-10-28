@@ -555,6 +555,29 @@ def child_value(sxpr, elt, val=None):
         val = child_at(kid, 0, val)
     return val
 
+def child_with_element(sxpr, ele):
+    """Get the first child of the given element type, at any depth.
+
+    sxpr sxpr
+    elt  element type
+
+    return the child found
+    """
+    c1 = child(sxpr, ele)
+    if c1:
+        return c1
+
+    for n in children(sxpr):
+        c2 = child(n, ele)
+        if c2:
+            return c2
+        else:
+            c3 = child_with_element(n, ele)
+            if c3:
+                return c3
+
+    return None
+
 def has_id(sxpr, id):
     """Test if an s-expression has a given id.
     """
