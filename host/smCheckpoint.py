@@ -26,7 +26,7 @@ class XenCheckpoint(object):
     """
 
     H_PREFIX = 'LinuxGuestRecord'
-	POST_CFG_SIZE = 18 # Byte
+    POST_CFG_SIZE = 18 # Byte
 
     def __init__(self): 
         self._h_prefix = XenCheckpoint.H_PREFIX # str
@@ -36,7 +36,7 @@ class XenCheckpoint(object):
         self._h_head_cfg = None 
         self._header = None # str, the whole head, including the 18B extra
 		# str, the checkpoint file name(including the complete path)
-		self._ckpfile = None
+        self._ckpfile = None
 
     def init(self, ckpfile):
         """ read the whole header of checkpoint and init the filds
@@ -48,10 +48,10 @@ class XenCheckpoint(object):
         @rtype: int
         @return: 1 if success, else 0 
         """
-		if not ckpfile:
-			return 0
+        if not ckpfile:
+            return 0
 
-		self._ckpfile = ckpfile
+        self._ckpfile = ckpfile
 
         try:
             f = open(ckpfile, 'rb')
@@ -77,7 +77,7 @@ class XenCheckpoint(object):
             self._ckpfile = None
             return 0
 
-		return 1
+        return 1
 
     @staticmethod
     def _modifyCKPHeadStr(options):
@@ -156,11 +156,11 @@ class XenCheckpoint(object):
         @rtype: int
         @return: 1 if success, else 0
         """
-		if not self._ckpfile:
-			print "init first"
-			return 0
+        if not self._ckpfile:
+            print "init first"
+            return 0
 
-		if not self._modifyCKPHeadStr(options):
-			return 0
+        if not self._modifyCKPHeadStr(options):
+            return 0
 
-		return self._overrideCKPHead()
+        return self._overrideCKPHead()
