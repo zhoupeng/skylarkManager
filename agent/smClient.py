@@ -118,7 +118,7 @@ class Client(threading.Thread):
                                                               jsobj[1]['nth'])
                 h.sock.send(req2host)
             elif jsobj[0] == CMDClientAgent.shutdowninstance:
-                h = self.sched.schedule(hosts, hostuuid = jsobj[1]('hostuuid'))
+                h = self.sched.schedule(hosts, hostuuid = jsobj[1]['hostuuid'])
 
                 if not h:
                     print "Client: error, scheded h is None"
@@ -130,7 +130,7 @@ class Client(threading.Thread):
                                                              jsobj[1]['nth'])
                 h.sock.send(req2host)
             elif jsobj[0] == CMDClientAgent.restoreinstance:
-                h = self.sched.schedule(hosts, hostuuid = jsobj[1]('hostuuid'))
+                h = self.sched.schedule(hosts, hostuuid = jsobj[1]['hostuuid'])
 
                 if not h:
                     print "Client: error, scheded host is None"
@@ -142,7 +142,7 @@ class Client(threading.Thread):
                                                             jsobj[1]['nth'])
                 h.sock.send(req2host)
             elif jsobj[0] == CMDClientAgent.saveinstance:
-                h = self.sched.schedule(hosts, hostuuid = jsobj[1]('hostuuid'))
+                h = self.sched.schedule(hosts, hostuuid = jsobj[1]['hostuuid'])
 
                 if not h:
                     print "Client: error, scheded host is None"
