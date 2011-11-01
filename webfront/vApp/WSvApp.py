@@ -350,19 +350,29 @@ class CMDvApp:
         return json.dumps(req)
 
     @staticmethod
-    def ack_restoreInstance(status, msg, instanceid):
+    def ack_restoreInstance(status, msg, info = {}):
         """Response to restoreinstance request
 
         @type status: str
         @param status: success or fail(SUCCESS, FAIL)
         @type msg: str
         @param msg: detailed describtion
-        @type instanceid: str
-        @param instanceid: The name of the restored instance
+        @type info: python map, like
+        {'instanceid':xx, 'spicehost': xx, 'spiceport': xx}
+        @param info: the necessary infomation for
+        client to access the instance.
+            * type instanceid: str
+            * param instanceid: The unique id of the restored instance,
+              which should be the same as before(client can check it)
+            * type spicehost: str
+            * param spicehost: the listen ip addr of spice server
+            * type spiceport: int
+            * param spiceport: the listen port of spice server
         """
         ack = [CMDvApp.restoreinstance, {'status': status,
                                          'msg': msg,
-                                         'instanceid': instanceid}]
+                                         'info': info}]
+
         return json.dumps(ack)
 
     @staticmethod

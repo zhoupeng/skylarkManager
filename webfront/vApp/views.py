@@ -322,7 +322,7 @@ def restoreInstance(username, passwd, instanceid):
     soc = socket.socket(type = socket.SOCK_DGRAM)
     soc.sendto(restoreins, (CLIENTSRV_HOST, CLIENTSRV_PORT))
 
-    ackRestore = soc.recv(128)
+    ackRestore = soc.recv(1024)
     if not ackRestore:
         return CMDvApp.ack_restoreInstance(Status.FAIL,
                                            'internal err')
@@ -332,11 +332,17 @@ def restoreInstance(username, passwd, instanceid):
         return CMDvApp.ack_restoreInstance(jsobj[1]['status'],
                                            jsobj[1]['msg'])
 
+    spicehost = jsobj[1]['spicehost']
+    spiceport = jsobj[1]['spiceport']
+    info = {'instanceid': instanceid,
+            'spicehost': spicehost, 'spiceport': spiceport}
+
+    #od.huuid = jsobj[1]['hostuuid']
     od.state = OrderState.RUNNING
     od.save()
 
     return CMDvApp.ack_restoreInstance(jsobj[1]['status'],
-                                       jsobj[1]['msg'])
+                                       jsobj[1]['msg'], info)
 
 def getInstanceInfo(username, passwd, instanceid):
     """get the detail info of an instance no matter running or stoped
