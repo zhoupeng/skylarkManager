@@ -296,7 +296,7 @@ class AgentCMDThread(threading.Thread):
                         status = Status.FAIL
                         msg = 'failed to shutdown instance'
                     else:
-                        status = Status.SUCCESS,
+                        status = Status.SUCCESS
                         msg = 'shutdow instance successfully'
                     ackshutdownins = CMDHostAgent.ack_shutdownInstance(
                                         self.host.getUUID(),
@@ -322,7 +322,7 @@ class AgentCMDThread(threading.Thread):
                     status = Status.FAIL
                     msg = 'fail to save instance'
                     if ret:
-                        status = Status.SUCCESS,
+                        status = Status.SUCCESS
                         msg = 'save instance successfully'
                     else:
                         print "AgentCMDThread: save instance failed"
@@ -372,7 +372,7 @@ class AgentCMDThread(threading.Thread):
                         instances.append(inst)
                         instances.unlock()
 
-                        status = Status.SUCCESS,
+                        status = Status.SUCCESS
                         msg = 'restore instance successfully'
                         spicehost = inst.spicehost
                         spiceport = inst.spiceport
