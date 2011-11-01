@@ -337,7 +337,7 @@ def restoreInstance(username, passwd, instanceid):
     info = {'instanceid': instanceid,
             'spicehost': spicehost, 'spiceport': spiceport}
 
-    #od.huuid = jsobj[1]['hostuuid']
+    od.huuid = jsobj[1]['hostuuid']
     od.state = OrderState.RUNNING
     od.save()
 

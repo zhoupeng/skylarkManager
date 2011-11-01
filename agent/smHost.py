@@ -200,6 +200,7 @@ class Host(threading.Thread):
                     instanceid = jsobj[1]['owner'] + jsobj[1]['type'] + jsobj[1]['nth']
                     ackrestoreins = CMDClientAgent.ack_restoreInstance(jsobj[1]['status'],
                                                                jsobj[1]['msg'], 
+                                                               jsobj[1]['uuid'],
                                                                instanceid,
                                                                jsobj[1]['spicehost'],
                                                                jsobj[1]['spiceport'])
