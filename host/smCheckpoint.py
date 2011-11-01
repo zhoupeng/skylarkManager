@@ -26,16 +26,15 @@ class XenCheckpoint(object):
     """ helper for checkpoint
     """
 
-    H_PREFIX = 'LinuxGuestRecord'
-    POST_CFG_SIZE = 18 # Byte
+    H_SIGNATURE = 'LinuxGuestRecord'
 
     def __init__(self): 
-        self._h_prefix = XenCheckpoint.H_PREFIX # str
-        self._h_size = None # 4B binanry str, size of cfg + POST_CFG_SIZE
+        self._h_prefix = XenCheckpoint.H_SIGNATURE # str
+        self._h_size = None # 4B binanry str, size of cfg
         self._h_size_val = 0 # the int value of ._h_size
 		# str, the cfg part of head, s-expression represented by str
-        self._h_head_cfg = None 
-        self._header = None # str, the whole head, including the 18B extra
+        self._h_head_cfg = None # cfg part
+        self._header = None # str, the whole head
 		# str, the checkpoint file name(including the complete path)
         self._ckpfile = None
 
@@ -57,27 +56,30 @@ class XenCheckpoint(object):
         try:
             f = open(ckpfile, 'rb')
 
-            pre = f.read(len(XenCheckpoint.H_PREFIX))
-            if pre != XenCheckpoint.H_PREFIX:
+            pre = f.read(len(XenCheckpoint.H_SIGNATURE))
+            if pre != XenCheckpoint.H_SIGNATURE:
                 print "unknown prefix: %s" % pre
                 self._ckpfile = None
                 return 0
             self._h_prefix = pre
 
             self._h_size = f.read(4)
+            
+            # '>' big-endian, It's necessary here.
+            # '!' network(=big-endian)
+            self._h_size_val = struct.unpack('!i', self._h_size)[0]
 
-            self._h_size_val = struct.unpack('i', self._h_size)[0]
+            self._h_head_cfg = f.read(self._h_size_val)
 
-            th = f.read(self._h_size_val)
-            self._h_head_cfg = th[0 : len(th) - XenCheckpoint.POST_CFG_SIZE]
-
-            self._header = self._h_prefix + self._h_size + th
+            self._header = self._h_prefix + self._h_size + self._h_head_cfg
 
         except (IOError, struct.error), err:
             print err
             self._ckpfile = None
+            f.close()
             return 0
 
+        f.close()
         return 1
 
     def _modifyCKPHeadStr(self, options):
@@ -100,19 +102,19 @@ class XenCheckpoint(object):
             if k == XenOptions.SPICEPORT:
                 cld_spiceport = sxp.child_with_element(sxp_obj,
                                               XenOptions.SPICEPORT)
-                # FIXME: how to deal with if it's <
-                if len(cld_spiceport[1]) > len(options[k]):
-                    options[k] = (len(cld_spiceport[1]) -
-                                len(options[k])) * '0' + options[k]
+                ## FIXME: how to deal with if it's <
+                #if len(cld_spiceport[1]) > len(options[k]):
+                #    options[k] = (len(cld_spiceport[1]) -
+                #                len(options[k])) * '0' + options[k]
                 cld_spiceport[1] = options[k]
             elif k == XenOptions.SPICEHOST:
                 cld_spicehost = sxp.child_with_element(sxp_obj,
                                               XenOptions.SPICEHOST)
 
-                # FIXME: how to deal with if it's <
-                if len(cld_spicehost[1]) > len(options[k]):
-                    options[k] = (len(cld_spicehost[1]) -
-                                len(options[k])) * '0' + options[k]
+                ## FIXME: how to deal with if it's <
+                #if len(cld_spicehost[1]) > len(options[k]):
+                #    options[k] = (len(cld_spicehost[1]) -
+                #                len(options[k])) * '0' + options[k]
                 cld_spicehost[1] = options[k]
             else:
                 print "Untion option: %s" % k
@@ -120,8 +122,13 @@ class XenCheckpoint(object):
 
         th = self._h_head_cfg
         self._h_head_cfg = sxp.to_string(sxp_obj)
+        # fill ' ' as placeholder, not '\0', '\0' cause sxp parse err
+        if len(th) > len(self._h_head_cfg):
+            self._h_head_cfg = (self._h_head_cfg +
+                                (len(th) - len(self._h_head_cfg)) * ' ')
+                               
         # sync with ._h_head_cfg
-        self._header.replace(th, self._h_head_cfg, 1)
+        self._header = self._header.replace(th, self._h_head_cfg, 1)
         return 1
 
     def _overrideCKPHead(self):
@@ -163,3 +170,22 @@ class XenCheckpoint(object):
             return 0
 
         return self._overrideCKPHead()
+
+    def geth_prefix(self):
+        return self._h_prefix
+
+    def geth_size(self):
+        return self._h_size
+
+    def geth_size_val(self):
+        return self._h_size_val
+
+    def geth_head_cfg(self):
+        return self._h_head_cfg 
+
+    def getheader(self):
+        return self._header
+
+    def getckpfile(self):
+        return self._ckpfile
+

@@ -15,5 +15,7 @@ import sys
 import os
 lib_path = os.path.abspath('../lib')
 common_path = os.path.abspath('../common')
+host_path = os.path.abspath('../host')
 sys.path.append(lib_path)
 sys.path.append(common_path)
+sys.path.append(host_path)
