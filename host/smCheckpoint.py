@@ -13,6 +13,7 @@ import libconf
 import smSXP as sxp
 import struct
 import os
+from StringIO import StringIO
 
 class XenOptions(object):
     """ represent xen cfg options's name
@@ -68,7 +69,7 @@ class XenCheckpoint(object):
             self._h_size_val = struct.unpack('i', self._h_size)[0]
 
             th = f.read(self._h_size_val)
-            self._h_head_cfg = th[0 : len(t) - POST_CFG_SIZE]
+            self._h_head_cfg = th[0 : len(th) - XenCheckpoint.POST_CFG_SIZE]
 
             self._header = self._h_prefix + self._h_size + th
 
@@ -79,8 +80,7 @@ class XenCheckpoint(object):
 
         return 1
 
-    @staticmethod
-    def _modifyCKPHeadStr(options):
+    def _modifyCKPHeadStr(self, options):
         """ modify exp self._h_head_cfg based on options
 
         @type options: dir
@@ -124,8 +124,7 @@ class XenCheckpoint(object):
         self._header.replace(th, self._h_head_cfg, 1)
         return 1
 
-    @staticmethod
-    def _overrideCKPHead():
+    def _overrideCKPHead(self):
         """ override ckpfile's header with _h_head_cfg, sync to disk
 
 		@rtype: int

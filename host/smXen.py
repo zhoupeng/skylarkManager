@@ -374,7 +374,7 @@ MEM(k) MEM(%)  MAXMEM(k) MAXMEM(%) VCPUS NETS NETTX(k) NETRX(k) VBDS   VBD_OO\
             return None
         options = {XenOptions.SPICEHOST: spicehost,
                    XenOptions.SPICEPORT: str(spiceport)}
-        if not xckp.adjustCKPHead(options):
+        if not xckp.adjustCKPHead(**options):
             return None
 
         ins = self._runXmRestore(ckp, vmName, spicehost, spiceport)
