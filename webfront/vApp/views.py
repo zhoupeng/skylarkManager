@@ -339,6 +339,8 @@ def restoreInstance(username, passwd, instanceid):
 
     od.huuid = jsobj[1]['hostuuid']
     od.state = OrderState.RUNNING
+    od.spicehost = spicehost
+    od.spiceport = spiceport
     od.save()
 
     return CMDvApp.ack_restoreInstance(jsobj[1]['status'],
@@ -401,6 +403,8 @@ def newInstanceBySnapshot(username, passwd, type):
 
         od.state = OrderState.RUNNING
         od.huuid = jsobj[1]['hostuuid']
+        od.spicehost = spicehost
+        od.spiceport = spiceport
         od.save()
 
         return CMDvApp.ack_newInstanceBySnapshot(jsobj[1]['status'],
