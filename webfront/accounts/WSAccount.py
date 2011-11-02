@@ -188,7 +188,8 @@ class CMDAccount:
         @param msg: message for detail
         @type info: python map, like 
           {'type':xx, 'category':xx, 'logo': xx, 'description': xx,
-           'state': xx}
+           'state': xx, 'spicehost': xx, 'spiceport': xx}
+          The spiceport and spiceport is valid when state is running
         """
         # TODO. Get more info about an instance, such as disk and vcpu
 

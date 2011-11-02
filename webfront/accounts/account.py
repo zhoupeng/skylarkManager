@@ -223,6 +223,10 @@ def getAppInfo(username, passwd, instanceid):
                 "logo": od.service.logo,
                 "description": od.service.description, "state": od.state}
 
+        if od.state == OrderState.RUNNING:
+            info.update(spicehost = od.spicehost)
+            info.update(spiceport = od.spiceport)
+
         return CMDAccount.ack_getAppInfo(Status.SUCCESS,
                                          "successfully", info)
     else:
