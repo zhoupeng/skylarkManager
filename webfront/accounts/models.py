@@ -73,6 +73,8 @@ class Order(models.Model):
                   but the image kept
         4-canceled, this order is canceled, the image and snapshot are released
     @field huuid: the uuid of the host
+    @field spicehost: the spice server host ip, valid when state is running
+    @field spiceport: the spice server port, valid when state is running
     """
 
     user = models.ForeignKey(User)
@@ -80,6 +82,8 @@ class Order(models.Model):
     num = models.IntegerField()
     state = models.IntegerField()
     huuid = models.CharField(max_length = 50, null = True)
+    spicehost = models.CharField(max_length = 50, null = True)
+    spiceport = models.IntegerField(null = True)
 
     def instanceID(self):
         """get the name of the instance corresponding to an order record
