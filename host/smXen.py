@@ -8,6 +8,12 @@
 #  Zhou Peng <ailvpeng25@gmail.com>, 2011.04 ~
 #
 # -------------------------------------------------------------------
+
+"""
+support xen list:
+* xen 4.0.1 with xm tools
+* The xen before 4.0.1 with compatible xm tools 
+"""
 import libconf
 
 import smProcess as utilsProcess
