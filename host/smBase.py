@@ -218,8 +218,8 @@ class BaseHypervisor(object):
         The usage is calculated via /proc interface
 
         @return: a dict with the following keys:
-            - cpusec: the cpu consumed in milliseconds in the measure interval
-            - cpurate: the cpu usage percentage in the measure interval
+         - cpusec: the cpu consumed in milliseconds in the measure interval
+         - cpurate: the cpu usage percentage in the measure interval
         """
         cpuu = smCPUUsage.CPUsage()
 
