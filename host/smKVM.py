@@ -13,6 +13,11 @@ import libconf
 from CONSTANTS import *
 import smBase
 import os
+import smIO
+import smErrors as errors
+import simplejson as json
+import smProcess as utilsProcess
+import smObjects
 
 class KVMNode(smBase.BaseHypervisor):
 
@@ -43,11 +48,89 @@ class KVMNode(smBase.BaseHypervisor):
         """
         return self.getLinuxNodeInfo()
 
+    def generateKVMRuntime(self, vmName, spicehost, spiceport,
+                           memory = 300):
+        """Generate KVM cmd with args
+        """
+        kvm = KVM_PATH
+        kvm_cmd = [kvm]
+
+        kvm_cmd.extend(["-m", memory])
+        kvm_cmd.extend(["-name", vmName])
+        kvm_cmd.extend(["-enable-kvm"])
+
+        disk_img = "%s/%s.img" % (HV_DISK_IMG_PATH, vmName)
+        # if=virtio leads to crashing of installed win7 by xen
+        #drive = "file=%s,if=virtio" % disk_img 
+        drive = "file=%s" % disk_img
+        kvm_cmd.extend(["-drive", drive])
+
+        kvm_cmd.extend(["-vga", "qxl"])
+
+        #kvm_cmd.extend(["-pidfile", pidfile])
+        kvm_cmd.extend(["-daemonize"])
+
+        spice_arg = "addr=%s,port=%s,disable-ticketing" % (spicehost,
+                                                           spiceport)
+        kvm_cmd.extend(["-spice", spice_arg])
+        
+        '''* Improve the experience by enable spice agent communication
+        channel between the host and the guest(including copy and past).
+        NB. The guest need to install and run agent client.
+        * It's important that the virserialport chardev= option matches
+        the <cdoe>id=</code> given the chardev (vdagentchannel in this
+        example).
+        It's also important that the port's name= is com.redhat.spice.0,
+        because that's the namespace spice-vdagentd is looking for
+        in the guest.
+        And finally, you need to specify name=vdagent so spice knows
+        what this channel is for.'''
+        # Add the virtio-serial device.
+        kvm_cmd.extend(["-device", "virtio-serial-pci"])
+        # Add a port for spice in that device.
+        virtserialport = (
+           "virtserialport,chardev=vdagentport,name=com.redhat.spice.0")
+        kvm_cmd.extend(["-device", virtserialport])
+        # Add a spicevmc chardev for that port.
+        spicevmc = "spicevmc,id=vdagentport,name=vdagent"
+        kvm_cmd.extend(["-chardev", spicevmc])
+
+        return kvm_cmd
+
+    def saveKVMRuntime(self, vmName, runtime):
+        """Save the runtime in the cfg dir
+
+        @type vmName: str
+        @param vmName: The name of the vm instance
+        @type runtime: list
+        @param runtime: qemu-kvm comand line
+        """
+        smIO.RemoveFile("%s/%s.cfg" % (HV_VM_CONFIG_PATH, vmName))
+
+        try:
+            smIO.WriteFile("%s/%s.cfg" % (HV_VM_CONFIG_PATH, vmName),
+                           data = json.dumps(runtime))
+        except EnvironmentError, err:
+            raise errors.HypervisorError("Cannot write KVM instance confile"
+                                   " file %s/%s.cfg: %s" %
+                                   (HV_VM_CONFIG_PATH, vmName, err))
+
     def createInstance(self, vmName, spicehost, spiceport,
                        memory = 300):
         """Create a VM
         """
-        pass
+        runtime = self.generateKVMRuntime(vmName, spicehost, spiceport, memory)
+        self.saveKVMRuntime(vmName, runtime)
+
+        res = utilsProcess.RunCmd(runtime)
+
+        if res.failed:
+            print "KVM create VM fails, reason:%s" % res.fail_reason
+            return None
+        
+        ins = smObjects.Instance(vmName, spicehost, spiceport)
+
+        return ins
 
     def newInstanceBySnapshot(self, vmName, spicehost, spiceport):
         """Create a VM from checkpoint template file

@@ -50,3 +50,6 @@ WEB_FRONT_URL = 'http://192.168.1.187:8000'
 # NICs
 # NI to use for spice server on host
 SPICE_NI = 'eth0' # 'lo', 'ethx'
+
+# kvm spicial
+KVM_PATH = '/usr/bin/qemu-kvm'

@@ -18,4 +18,5 @@ kvm = KVMNode()
 print kvm.getType()
 print kvm.getCPUUsage()
 print kvm.getNodeInfo()
-
+print kvm.generateKVMRuntime('testvm', '192.168.1.187', '6200', 350)
+print kvm.createInstance('testvm', '192.168.1.187', '6200', 350)
