@@ -295,7 +295,7 @@ MEM(k) MEM(%)  MAXMEM(k) MAXMEM(%) VCPUS NETS NETTX(k) NETRX(k) VBDS   VBD_OO\
         config.write("spice_disable_ticketing = 1\n")
         config.write("spiceagent_mouse = 1\n")
 
-        smIO.RemoveFile("%s/%s" % (HV_VM_CONFIG_PATH, vmName))
+        smIO.RemoveFile("%s/%s.cfg" % (HV_VM_CONFIG_PATH, vmName))
 
         try:
             smIO.WriteFile("%s/%s.cfg" % (HV_VM_CONFIG_PATH, vmName),
@@ -333,7 +333,7 @@ MEM(k) MEM(%)  MAXMEM(k) MAXMEM(%) VCPUS NETS NETTX(k) NETRX(k) VBDS   VBD_OO\
         to run "xm restore".
         Assume checkpointfile is ready
         
-        @type checkpointfile: 
+        @type checkpointfile: str
         @param: the file name of the checkpoint,
          including the complete path, otherwish the current dir 
         """
