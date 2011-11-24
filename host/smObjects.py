@@ -22,7 +22,7 @@ class Instance:
     can be accessed by getinstanceinfo
     """
 
-    def __init__(self, name, spicehost, spiceport, owner = None,
+    def __init__(self, name, spicehost = None, spiceport = 0, owner = None,
                  type = None, nth = 0):
         """
         @type name: str
