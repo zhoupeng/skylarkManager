@@ -115,9 +115,10 @@ class KVMNode(smBase.BaseHypervisor):
                                    " file %s/%s.cfg: %s" %
                                    (HV_VM_CONFIG_PATH, vmName, err))
 
-    def createInstance(self, vmName, spicehost, spiceport,
+    def createInstance1(self, vmName, spicehost, spiceport,
                        memory = 300):
-        """Create a VM
+        """Create a VM through qemu-kvm cmd directly.
+        NB. Obsolete
         """
         runtime = self.generateKVMRuntime(vmName, spicehost, spiceport, memory)
         self.saveKVMRuntime(vmName, runtime)
