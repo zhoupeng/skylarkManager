@@ -51,5 +51,10 @@ WEB_FRONT_URL = 'http://192.168.1.187:8000'
 # NI to use for spice server on host
 SPICE_NI = 'eth0' # 'lo', 'ethx'
 
-# kvm spicial
+"""kvm special"""
+# The kvm program
 KVM_PATH = '/usr/bin/qemu-kvm'
+
+"""virsh"""
+"""The virsh program"""
+VIRSH_PATH = '/usr/bin/virsh'
