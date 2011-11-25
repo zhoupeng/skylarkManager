@@ -64,20 +64,28 @@ class VirshVMXML:
         for k in options.keys():
             if k == VirshOptions.SPICEHOST:
                 graphics = self._tree.find(VirshOptions.GRAPHICS)
+                """FutureWarning: The behavior of this method will change
+                in future versions.
+                Use specific 'len(elem)' or 'elem is not None' test instead.
                 if not graphics:
+                By Python 2.7.2 (default, Oct 27 2011, 01:40:22)"""
+                #if not graphics:
+                if graphics is None:
                     return 0
                 graphics.attrib["listen"] = options[k]
                 listen = graphics.find("listen")
                 """Inconceivable that "if listen:" is false
-                but listen is not None"""
+                when listen is not None"""
                 #if listen:
                 #    listen.attrib["address"] = options[k]
-                listen.attrib["address"] = options[k]
+                #listen.attrib["address"] = options[k]
+                if listen is not None:
+                    listen.attrib["address"] = options[k]
 
                 tag = 1
             if k == VirshOptions.SPICEPORT:
                 graphics = self._tree.find(VirshOptions.GRAPHICS)
-                if not graphics:
+                if graphics is None:
                     return 0
                 graphics.attrib["port"] = options[k]
 
