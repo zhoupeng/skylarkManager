@@ -14,6 +14,7 @@ import smNet
 import socket
 import smErrors as errors
 import smXen
+import smKVM
 from smCMD import *
 import smIO
 import simplejson as json
@@ -52,6 +53,8 @@ class Host(object):
         self.node = None
         if HOST_TYPE == XEN_TYPE:
             self.node = smXen.XenNode()
+        if HOST_TYPE == KVM_TYPE:
+            self.node = smKVM.KVMNode()
 
         self.__uuid = smIO.NewUUID()
         # periodical resource reporter
