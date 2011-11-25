@@ -20,6 +20,7 @@ import smProcess as utilsProcess
 import smObjects
 from cStringIO import StringIO
 import datetime
+from smVirshXML import *
 
 class KVMNode(smBase.BaseHypervisor):
 
@@ -218,7 +219,47 @@ class KVMNode(smBase.BaseHypervisor):
         """Create a VM from checkpoint template file
         Use our storage system to parse vmName
         """
-        pass
+        # General and proper way(compatible with general fs
+        # and my coming dfs shared fs):
+        # Have a copy from the checkpoint file template,
+        # have a copy from the disk img template,
+        # and adjust the necessary params of xml header
+        # then restore from the copy?
+        # Here we use skyalrk storage to tuning temporarily.
+        ckp = "%s/%s.ckp" % (HV_CKP_TEMPLATE_PATH, vmName)
+        ins = self._runVirshRestore(ckp, vmName, spicehost, spiceport)
+        return ins
+
+    @staticmethod
+    def _runVirshRestore(ckpfile, vmName, spicehost,
+                         spiceport, xml = None):
+        """Helper function for L{newInstanceBySnapshot, restoreInstance}
+        to run "virsh restore".
+        Assume checkpointfile is ready
+        
+        @type ckpfile: str
+        @param: the file name of the checkpoint,
+         including the complete path, otherwish the current dir 
+        @type xml: str
+        @param: The file name of an alternative xml used to pass changes,
+         xml including the complete file path, otherwish the current dir
+        """
+        virsh = VIRSH_PATH if VIRSH_PATH else 'virsh'
+        cmd = [virsh, "restore", ckpfile]
+        optxml = ["--xml", xml] if xml else None
+        if optxml:
+            cmd.extend(optxml)
+        res = utilsProcess.RunCmd(cmd)
+        
+        if res.failed:
+            print "KVM restore fails, reason:%s, extra: %s" % (
+                                            res.fail_reason,
+                                            res.stderr)
+            return None
+        
+        ins = smObjects.Instance(vmName, spicehost, spiceport)
+
+        return ins
 
     def restoreInstance(self, vmName, spicehost, spiceport):
         """Restore a VM from it's own checkpoint file
@@ -233,7 +274,21 @@ class KVMNode(smBase.BaseHypervisor):
         @type spiceport: int
         @param spiceport: the port for this spice server
         """
-        pass
+        vmxml = "%s/%s.xml" % (HV_VM_CONFIG_PATH, vmName)
+        # Adjust(modify) the spiceport(host) fields of the xml file
+        vvmxml = VirshVMXML()
+        if not vvmxml.init(vmxml):
+            return None
+        options = {VirshOptions.SPICEHOST: spicehost,
+                   VirshOptions.SPICEPORT: str(spiceport)}
+        if not vvmxml.adjust(**options):
+            return None
+
+        ckp = "%s/%s.ckp" % (HV_DISK_IMG_PATH, vmName)
+
+        ins = self._runVirshRestore(ckp, vmName, spicehost,
+                                    spiceport, vmxml)
+        return ins
 
     @staticmethod
     def _runVirshDumpxml(instanceid):
