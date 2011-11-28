@@ -164,6 +164,7 @@ class BaseHypervisor(object):
               - nr_cpus: total number of CPUs
               - nr_nodes: in a NUMA system, the number of domains
               - nr_sockets: the number of physical CPU sockets in the node
+              - cpurate: the cpu usage percentage in the measure interval
        
         """
         try:
@@ -207,6 +208,15 @@ class BaseHypervisor(object):
         # FIXME: export correct data here
         result["cpu_nodes"] = 1
         result["cpu_sockets"] = 1
+
+        cpuu = smCPUUsage.CPUsage()
+        result['cpurate'] = cpuu.getcpurate()
+        # FIXME: export correct data here...
+        result['cpu_mhz'] = 0
+        result['threads_per_core'] = 1
+        result['cores_per_socket'] = 1
+        result['cpu_sockets'] = cpu_total / (result['cores_per_socket']
+                                             * result['threads_per_core'])
        
         return result
 
