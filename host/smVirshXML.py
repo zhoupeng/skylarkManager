@@ -18,12 +18,14 @@ import datetime
 class VirshOptions:
     """represent libvirt virsh vm xml element or attribute
     """
+    # The key name of optinos to be modified
     SPICEPORT = "devices/graphics[@port]"
     SPICEHOST = "devices/graphics[@listen]"
 
+    # The paths of related elements or attributes
     GRAPHICS = "devices/graphics"
     LISTEN = "devices/graphics/listen" # [@address]
-    GRAPHICSTYPE = "devices/graphics[@type]"
+    GRAPHICSTYPE = "devices/graphics[@type]" # Not used yet
 
 class VirshVMXML:
     """ helper for virsh vm xml modifying
@@ -54,7 +56,13 @@ class VirshVMXML:
         return 1
 
     def adjust(self, **options):
-        """
+        """ modify the vm's xml config file based on options
+
+        @type options: dir, keyward arg
+        @param options: like {SPICEHOST: 'xxx',
+                              SPICEPORT: xxx(str)}
+        @rtype: int
+        @return: 1 if success, else 0
         """
         if not self._tree:
             print "init first"
