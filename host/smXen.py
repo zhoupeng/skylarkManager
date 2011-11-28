@@ -319,7 +319,9 @@ MEM(k) MEM(%)  MAXMEM(k) MAXMEM(%) VCPUS NETS NETTX(k) NETRX(k) VBDS   VBD_OO\
         res = utilsProcess.RunCmd(["xm", "create", "%s/%s.cfg" % 
                                   (HV_VM_CONFIG_PATH, vmName)])
         if res.failed:
-            print "xm create fals, reason:%s" % res.fail_reason
+            print "xm create fals, reason:%s, extra: %s" % (
+                                        res.fail_reason,
+                                        res.stderr)
             return None
         
         ins = smObjects.Instance(vmName, spicehost, spiceport)
@@ -340,7 +342,9 @@ MEM(k) MEM(%)  MAXMEM(k) MAXMEM(%) VCPUS NETS NETTX(k) NETRX(k) VBDS   VBD_OO\
         res = utilsProcess.RunCmd(["xm", "restore", checkpointfile])
         
         if res.failed:
-            print "xm restore fals, reason:%s" % res.fail_reason
+            print "xm restore fals, reason:%s, extra: %s" % (
+                                        res.fail_reason,
+                                        res.stderr)
             return None
         
         ins = smObjects.Instance(vmName, spicehost, spiceport)
@@ -422,8 +426,9 @@ MEM(k) MEM(%)  MAXMEM(k) MAXMEM(%) VCPUS NETS NETTX(k) NETRX(k) VBDS   VBD_OO\
         res = utilsProcess.RunCmd(["xm", "save", instanceid, ckpfile])
 
         if res.failed:
-            print "xm save %s failed, reason:%s" % (instanceid,
-                                                    res.fail_reason)
+            print "xm save %s failed, reason:%s, extra: %s" % (instanceid,
+                                                    res.fail_reason,
+                                                    res.stderr)
             return None
         return res
 
@@ -454,6 +459,8 @@ MEM(k) MEM(%)  MAXMEM(k) MAXMEM(%) VCPUS NETS NETTX(k) NETRX(k) VBDS   VBD_OO\
         """
         result = utilsProcess.RunCmd(["xm", "info"])
         if result.failed:
-            return "'xm info' failed: %s, %s" % (result.fail_reason, result.output)
+            return "'xm info' failed: %s, %s" % (
+                                        result.fail_reason,
+                                        result.output)
 
 

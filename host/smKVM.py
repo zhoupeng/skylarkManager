@@ -129,7 +129,8 @@ class KVMNode(smBase.BaseHypervisor):
         res = utilsProcess.RunCmd(runtime)
 
         if res.failed:
-            print "KVM create VM fails, reason:%s" % res.fail_reason
+            print "KVM create VM fails, reason:%s, extra: %s" % (
+                                    res.fail_reason, res.stderr)
             return None
         
         ins = smObjects.Instance(vmName, spicehost, spiceport)
@@ -208,7 +209,9 @@ class KVMNode(smBase.BaseHypervisor):
         res = utilsProcess.RunCmd([cmd, "create", "%s/%s.xml" % 
                                   (HV_VM_CONFIG_PATH, vmName)])
         if res.failed:
-            print "virsh create fails, reason:%s" % res.fail_reason
+            print "virsh create fails, reason:%s, extra: %s" % (
+                                               res.fail_reason,
+                                               res.stderr)
             return None
         
         ins = smObjects.Instance(vmName, spicehost, spiceport)
@@ -320,8 +323,10 @@ class KVMNode(smBase.BaseHypervisor):
         res = utilsProcess.RunCmd([virsh, "destroy", instanceid])
 
         if res.failed:
-            print "KVM shutdown %s failed, reason:%s" % (instanceid,
-                                                        res.fail_reason)
+            print "KVM shutdown %s failed, reason:%s, extra: %s" % (
+                                                        instanceid,
+                                                        res.fail_reason,
+                                                        res.stderr)
             return None
         return res
 
