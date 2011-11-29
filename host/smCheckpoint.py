@@ -32,10 +32,10 @@ class XenCheckpoint(object):
         self._h_prefix = XenCheckpoint.H_SIGNATURE # str
         self._h_size = None # 4B binanry str, size of cfg
         self._h_size_val = 0 # the int value of ._h_size
-		# str, the cfg part of head, s-expression represented by str
+        # str, the cfg part of head, s-expression represented by str
         self._h_head_cfg = None # cfg part
         self._header = None # str, the whole head
-		# str, the checkpoint file name(including the complete path)
+        # str, the checkpoint file name(including the complete path)
         self._ckpfile = None
 
     def init(self, ckpfile):
@@ -88,8 +88,8 @@ class XenCheckpoint(object):
         @type options: dir
         @param options: like {'spicehost': 'xxx',
                               'spiceport': xxx(str)}
-		@rtype: str
-		@return: 1 success, else 0
+        @rtype: str
+        @return: 1 success, else 0
         """
         str_io = StringIO(self._h_head_cfg)
         sxp_obj = sxp.parse(str_io)
@@ -134,8 +134,8 @@ class XenCheckpoint(object):
     def _overrideCKPHead(self):
         """ override ckpfile's header with _h_head_cfg, sync to disk
 
-		@rtype: int
-		@return: 1 success, else 0
+        @rtype: int
+        @return: 1 success, else 0
         """
         try:
             f = open(self._ckpfile, 'rb+')

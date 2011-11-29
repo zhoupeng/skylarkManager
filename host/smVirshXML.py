@@ -31,7 +31,7 @@ class VirshVMXML:
     """ helper for virsh vm xml modifying
     """
     def __init__(self):
-		# str, the xml file name(including the complete path)
+        # str, the xml file name(including the complete path)
         self._xmlfile = None
         # ElementTree object of xml file
         self._tree = None
