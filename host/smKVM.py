@@ -378,8 +378,10 @@ class KVMNode(smBase.BaseHypervisor):
         # Update the vm xml config file used by restore later.
         # The restore pass parameter based on this xml.
         # Thanks to virsh restore to avoid modify the ckp directly.
-        self._writeConfigFile(instanceid, None, 0,
-                xml = self._runVirshDumpxml(instanceid))
+        xml = self._runVirshDumpxml(instanceid)
+        if xml is None:
+            return None
+        self._writeConfigFile(instanceid, None, 0, xml = xml)
 
         return self._runVirshSave(instanceid, ckpfile)
 
