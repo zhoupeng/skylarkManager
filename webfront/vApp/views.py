@@ -96,6 +96,10 @@ def api_vapp(request):
         instanceid = jsobj[1]['instanceid']
         jsstr = saveInstance(uname, passwd, instanceid)
         return HttpResponse(jsstr, mimetype = 'application/json')
+    elif cmd == CMDvApp.startinstance:
+        instanceid = jsobj[1]['instanceid']
+        jsstr = startInstance(uname, passwd, instanceid)
+        return HttpResponse(jsstr, mimetype = 'application/json')
 
 def reqInstance(username, passwd, type):
     """request an instance, it will create one when username haven't
@@ -172,7 +176,7 @@ def releaseInstance(username, passwd, instanceid):
     """
     pass
 
-def startInsance(username, passwd, instanceid):
+def startInstance(username, passwd, instanceid):
     """start an existing instance
     
     @type username: str
@@ -182,7 +186,7 @@ def startInsance(username, passwd, instanceid):
     @type instanceid: str
     @param instanceid: the id of the instance
     """
-    pass
+    return CMDvApp.ack_startInsance(Status.FAIL, "not implemented yet")
 
 def shutdownInstance(username, passwd, instanceid):
     """shutdown an instance (OrderState.STOPED)
