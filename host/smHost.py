@@ -56,13 +56,33 @@ class Host(object):
         if HOST_TYPE == KVM_TYPE:
             self.node = smKVM.KVMNode()
 
-        self.__uuid = smIO.NewUUID()
         # periodical resource reporter
         self.rsReporter = None
         # thread to response to command from agent.
         self.agentCMDThread = None
         self.running = False
         self.init_sys_dir()
+        # host db related code need to refactor,
+        # it will be extacted as host state save and restore
+        # {"host": {"uuid": uuid}, "instances": [{}, {}, ...]}
+        if os.path.getsize(HOST_DB_PATH) == 0:
+            self.__uuid = smIO.NewUUID()
+            jsobj = {"hostinfo": {"uuid": self.__uuid}}
+            f = open(HOST_DB_PATH, 'w')
+            f.write(json.dumps(jsobj))
+            f.close()
+        else:
+            f = open(HOST_DB_PATH, 'r')
+            jsstr = f.readline()
+            try:
+                jsobj = json.loads(jsstr)
+                self.__uuid = jsobj["hostinfo"]["uuid"]
+                f.close()
+            except json.JSONDecodeError, e:
+                print e
+                print "Invalid Host DB: %s" % jsstr
+                f.close()
+                sys.exit(0)
 
     def init_sys_dir(self):
         vms_cfg_dir = HV_VM_CONFIG_PATH
@@ -73,6 +93,10 @@ class Host(object):
         for d in dirs:
             if not os.path.exists(d):
                 os.makedirs(d)
+        host_db = HOST_DB_PATH
+        # touch host_db file if not exist
+        if not os.path.isfile(host_db):
+            open(host_db, 'w').close()
 
     def getType(self):
         """ get the type of this host node
