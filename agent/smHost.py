@@ -16,6 +16,7 @@ import smErrors
 import threading
 import smDump
 from smGlobals import *
+import simplejson as json
 
 
 class Host(threading.Thread):
@@ -72,7 +73,13 @@ class Host(threading.Thread):
         while self.ready:
             cmd = self.sock.recv(1024)
             if cmd:
-                jsobj = json.loads(cmd)
+                # If the received json is in syntax err, continue.
+                try:
+                    jsobj = json.loads(cmd)
+                except json.JSONDecodeError, e:
+                    print e
+                    print "Agent Host receive: %s from host node" % cmd
+                    continue
 
                 if jsobj[0] == CMDHostAgent.join:
                     if not self.__uuid:
