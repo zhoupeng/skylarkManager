@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Filename: host/smHost.py
+# Filename: host/smGlobals.py
 #
 # -------------------------------------------------------------------
 #
@@ -12,6 +12,7 @@ import libconf
 
 from CONSTANTS import *
 import smList
+import socket
 
 # instances
 instances = smList.LockList()
@@ -23,6 +24,16 @@ def get_free_port4spice():
     if not spice_port_current % (SPICE_BASE_PORT + SPICE_PORT_RANGE + 1):
         spice_port_current = SPICE_BASE_PORT
 
-    spice_port_current += 1
+    while True:
+        spice_port_current += 1
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            s.bind(('', spice_port_current - 1))
+            s.close()
+            break
+        except Exception, msg:
+            print "%s: will test next port" % msg
+            continue
+
     return spice_port_current - 1
 
