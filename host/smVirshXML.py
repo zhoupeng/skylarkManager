@@ -21,6 +21,7 @@ class VirshOptions:
     # The key name of optinos to be modified
     SPICEPORT = "devices/graphics[@port]"
     SPICEHOST = "devices/graphics[@listen]"
+    AGENTMOUSE = "devices/graphics/mouse"
 
     # The paths of related elements or attributes
     GRAPHICS = "devices/graphics"
@@ -96,6 +97,14 @@ class VirshVMXML:
                 if graphics is None:
                     return 0
                 graphics.attrib["port"] = options[k]
+
+                tag = 1
+            if k == VirshOptions.AGENTMOUSE:
+                agentmouse = self._tree.find(VirshOptions.AGENTMOUSE)
+                # if no agent mouse sub-elem, ignore this setting
+                if agentmouse is None:
+                    continue
+                agentmouse.attrib["mode"] = options[k]
 
                 tag = 1
 

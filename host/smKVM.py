@@ -282,8 +282,11 @@ class KVMNode(smBase.BaseHypervisor):
         vvmxml = VirshVMXML()
         if not vvmxml.init(vmxml):
             return None
+        # disable agent-mouse to avoid mouse bug relating to 
+        # spice mouse in client(agent) mode.
         options = {VirshOptions.SPICEHOST: spicehost,
-                   VirshOptions.SPICEPORT: str(spiceport)}
+                   VirshOptions.SPICEPORT: str(spiceport),
+                   VirshOptions.AGENTMOUSE: 'server'}
         if not vvmxml.adjust(**options):
             return None
 

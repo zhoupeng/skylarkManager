@@ -16,6 +16,7 @@ vvmxml = VirshVMXML()
 vvmxml.init(xml)
 
 options = { VirshOptions.SPICEHOST: '192.168.1.187',
-            VirshOptions.SPICEPORT: '6111'
+            VirshOptions.SPICEPORT: '6111',
+            VirshOptions.AGENTMOUSE: 'server'}
           }
 print vvmxml.adjust(**options)
