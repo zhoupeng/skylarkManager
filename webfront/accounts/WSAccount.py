@@ -25,6 +25,7 @@ class CMDAccount:
     userunregister = "USERUNREGISTER"
     generalresp = "GENERALRESP"
     order = "ORDER"
+    unorder = "UNORDER"
     appinfo = "APPINFO"
 
 
@@ -293,6 +294,33 @@ class CMDAccount:
         @param msg: message for detail
         """
         ack = [CMDAccount.order, {"status": status,
+                                      "msg": msg}]
+
+        return json.dumps(ack)
+
+    @staticmethod
+    def api_unOrder(username, passwd, instanceid):
+        """User request to cancel an order.
+
+        @type username: str
+        @param username: user name
+        @type passwd: str
+        @param passwd: password
+        @type instanceid: str
+        @param instanceid: the instance to cancel
+        """
+        req = [CMDAccount.unorder, {'instanceid': instanceid}]
+        return json.dumps(req)
+
+    @staticmethod
+    def ack_unOrder(status, msg):
+        """response to unorder request
+        @type status: str
+        @param status: unOrder success or fail("success", "fail")
+        @type msg: str
+        @param msg: message for detail
+        """
+        ack = [CMDAccount.unorder, {"status": status,
                                       "msg": msg}]
 
         return json.dumps(ack)

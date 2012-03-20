@@ -58,7 +58,8 @@ def api_account(request):
     if cmd not in [CMDAccount.userlogin, CMDAccount.userlogout,
                    CMDAccount.myapplist, CMDAccount.allapplist,
                    CMDAccount.userregister, CMDAccount.userunregister,
-                   CMDAccount.order, CMDAccount.appinfo]:
+                   CMDAccount.order, CMDAccount.appinfo,
+                   CMDAccount.unorder]:
         jsstr = CMDAccount.ack_generalResp(Status.FAIL, "Invalid WebAPI")
         return HttpResponse(jsstr, mimetype = 'application/json')
 
@@ -83,6 +84,10 @@ def api_account(request):
     elif cmd == CMDAccount.order:
         orderlist = jsobj[1]['orderlist']
         jsstr = order(uname, passwd, orderlist)
+        return HttpResponse(jsstr, mimetype = 'application/json')
+    elif cmd == CMDAccount.unorder:
+        instanceid = jsobj[1]['instanceid']
+        jsstr = unOrder(uname, passwd, instanceid)
         return HttpResponse(jsstr, mimetype = 'application/json')
     elif cmd == CMDAccount.allapplist:
         jsstr = getAllAppList()
@@ -272,3 +277,32 @@ def order(username, passwd, orderlist):
     else:
         return CMDAccount.ack_order(Status.FAIL,
                                     "invalid user name or password")
+
+def unOrder(username, passwd, instanceid):
+    """User request cancel an order.
+
+    @type username: str
+    @param username: user name
+    @type passwd: str
+    @param passwd: password
+    @type instanceid: str
+    @param instanceid: the instance to cancel
+    """
+    user = auth.authenticate(username = username, password = passwd)
+    if user is not None:
+        od_qs = Order.objects.filter(user = user)
+        od = None
+        for i in od_qs:
+            if i.instanceID() == instanceid:
+                od = i
+                break
+        if not od:
+            return CMDAccount.ack_unOrder(Status.FAIL,
+                                  "instance %s doesn't exist" % instanceid)
+
+        if od.state == OrderState.RUNNING:
+            return CMDAccount.ack_unOrder(Status.FAIL,
+                                "close the instance %s first" % instanceid)
+        # TODO: request to release the resource of instanceid in host node
+        od.delete()
+        return CMDAccount.ack_unOrder(Status.SUCCESS, 'successful')
