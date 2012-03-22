@@ -12,8 +12,11 @@
 import libconf
 import smHost 
 from CONSTANTS import *
+import signal
 
 if __name__ == '__main__':
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+
     host = smHost.Host(MASTER_AGENT_HOST, MASTER_AGENT_PORT)
 
     print "Try to join in the cluster ..."

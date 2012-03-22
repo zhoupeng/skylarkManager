@@ -13,8 +13,11 @@ from CONSTANTS import *
 import smListeners
 import smClient
 from smSchedule import Scheduler
+import signal
 
 if __name__ == '__main__':
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+
     hostListener = smListeners.Listener(port = MASTER_AGENT_PORT,
                                         type = "host")
     hostListener.start()
@@ -25,5 +28,6 @@ if __name__ == '__main__':
 
     sched = Scheduler.getInstance()
     sched.setMethod(Scheduler.M_CYCLIC)
+
     hostListener.join()
     clientSrv.join()
