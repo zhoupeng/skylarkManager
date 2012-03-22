@@ -43,5 +43,8 @@ if __name__ == '__main__':
     #print hosts
     hosts.dump()
     """
+    from smSchedule import Scheduler
+    sched = Scheduler.getInstance()
+    sched.setMethod(Scheduler.M_MEM)
     hostListener.join()
     clientSrv.join()

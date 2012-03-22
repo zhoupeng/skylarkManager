@@ -157,8 +157,10 @@ class Scheduler:
         @param nodes: The list of nodes
         """
 
-        nodes.sort(key = lambda n: n.latestReport['memory_dom0'] +
-                                   n.latestReport['memory_free'],
+        #nodes.sort(key = lambda n: n.latestReport['memory_dom0'] +
+        #                           n.latestReport['memory_free'],
+        #                           reverse = True)
+        nodes.sort(key = lambda n: n.latestReport['memory_free'],
                                    reverse = True)
         return nodes[0]
 
