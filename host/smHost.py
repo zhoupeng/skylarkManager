@@ -88,8 +88,9 @@ class Host(object):
         vms_cfg_dir = HV_VM_CONFIG_PATH
         vms_disk_dir = HV_DISK_IMG_PATH
         ckp_tmp_path = HV_CKP_TEMPLATE_PATH
+        us_prv_store_path = US_PRV_STORE_PATH
 
-        dirs = [vms_cfg_dir, vms_disk_dir, ckp_tmp_path]
+        dirs = [vms_cfg_dir, vms_disk_dir, ckp_tmp_path, us_prv_store_path]
         for d in dirs:
             if not os.path.exists(d):
                 os.makedirs(d)

@@ -29,6 +29,8 @@ Particular vm's ckp path is the same as HV_DISK_IMG_PATH
 HV_CKP_TEMPLATE_PATH = "/etc/skylark/ckptems" 
 # The path of file to save host state
 HOST_DB_PATH = "/etc/skylark/host.db"
+# The path of user private storage
+US_PRV_STORE_PATH = "/etc/skylark/usprvdata"
 
 #
 # NB: Port N.O. allocation
