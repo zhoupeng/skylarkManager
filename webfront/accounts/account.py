@@ -262,6 +262,12 @@ def order(username, passwd, orderlist):
             srv = Service.objects.filter(type = tp)
             # get num
             od_qs = Order.objects.filter(user = user, service = srv[0])
+
+            # There is at most one storage service per user,
+            # If so, only ignore it but return success.
+            if (srv[0].category == Service.CAT_DATA and od_qs.count() > 0):
+                continue
+
             num = 0
             for od in od_qs:
                 if od.num > num:
