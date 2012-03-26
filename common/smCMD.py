@@ -22,7 +22,7 @@ class CMDClientAgent:
     newinstancebysnapshot = "NEWINSTANCEBYSNAPSHOT"
 
     @staticmethod
-    def cmd_createInstance(owner, type, nth = "0"):
+    def cmd_createInstance(owner, type, nth = "0", prvstoreid = ""):
         """Request to create an instance
         webfront client -> agent
         You don't need to take care of the meaning of
@@ -35,10 +35,13 @@ class CMDClientAgent:
         @param type: the type of instance (e.g. winxp, word)
         @type nth: str
         @param nth: how many now?
+        @type prvstoreid: str
+        @param prvstoreid: the private storage id for user
         """
         req = [CMDClientAgent.createinstance, {'owner': owner,
                                                'type': type,
-                                               'nth': nth}]
+                                               'nth': nth,
+                                           'prvstoreid': prvstoreid}]
         return json.dumps(req)
 
     @staticmethod
@@ -67,7 +70,7 @@ class CMDClientAgent:
         return json.dumps(ack)
 
     @staticmethod
-    def cmd_newInstanceBySnapshot(owner, type, nth = "0"):
+    def cmd_newInstanceBySnapshot(owner, type, nth = "0", prvstoreid = ""):
         """The webfront Request to create an new instance from type
         snapshot(eg. xen checkpoint)
         It's different from restoreinstance cmd that the later
@@ -84,10 +87,13 @@ class CMDClientAgent:
         @param type: the type of instance (e.g. winxp, word)
         @type nth: str
         @param nth: how many now?
+        @type prvstoreid: str
+        @param prvstoreid: the private storage id for user
         """
         req = [CMDClientAgent.newinstancebysnapshot, {'owner': owner,
                                                       'type': type,
-                                                      'nth': nth}]
+                                                      'nth': nth,
+                                           'prvstoreid': prvstoreid}]
         return json.dumps(req)
 
     @staticmethod
@@ -183,7 +189,7 @@ class CMDClientAgent:
         return json.dumps(ack)
 
     @staticmethod
-    def cmd_restoreInstance(owner, type, nth, hostuuid):
+    def cmd_restoreInstance(owner, type, nth, hostuuid, prvstoreid = ""):
         """
         @type owner: str
         @param owner: the owner of vm
@@ -193,11 +199,14 @@ class CMDClientAgent:
         @param nth: which one?
         @type hostuuid: str
         @param hostuuid: uuid of node hosting this instance
+        @type prvstoreid: str
+        @param prvstoreid: the private storage id for user
         """
         req = [CMDClientAgent.restoreinstance, {'owner': owner,
                                                 'type': type,
                                                 'nth': nth,
-                                                'hostuuid': hostuuid}]
+                                                'hostuuid': hostuuid,
+                                                'prvstoreid': prvstoreid}]
         return json.dumps(req)
 
     @staticmethod
@@ -302,7 +311,7 @@ class CMDHostAgent:
         return json.dumps(fetch)
 
     @staticmethod
-    def cmd_createInstance(uuid, owner, type, nth):
+    def cmd_createInstance(uuid, owner, type, nth, prvstoreid = ""):
         """ request to create an instance.
         agent -> host
 
@@ -318,11 +327,14 @@ class CMDHostAgent:
         @params type: the type of this instance(winxp, word ...)
         @type nth: str
         @params nth: how many now (0, 1, ...)
+        @type prvstoreid: str
+        @param prvstoreid: the private storage id for user
         """
         r = [CMDHostAgent.createinstance, {'uuid': uuid,
                                            'owner': owner,
                                            'type': type,
-                                           'nth': nth}]
+                                           'nth': nth,
+                                           'prvstoreid': prvstoreid}]
 
         return json.dumps(r)
 
@@ -343,7 +355,7 @@ class CMDHostAgent:
         return json.dumps(ack)
 
     @staticmethod
-    def cmd_newInstanceBySnapshot(uuid, owner, type, nth):
+    def cmd_newInstanceBySnapshot(uuid, owner, type, nth, prvstoreid = ""):
         """ request to create an instance from snapshot file
         agent -> host
 
@@ -359,12 +371,15 @@ class CMDHostAgent:
         @params type: the type of this instance(winxp, word ...)
         @type nth: str
         @params nth: how many now (0, 1, ...)
+        @type prvstoreid: str
+        @param prvstoreid: the private storage id for user
         """
         r = [CMDHostAgent.newinstancebysnapshot,
              {'uuid': uuid,
               'owner': owner,
               'type': type,
-              'nth': nth}]
+              'nth': nth,
+              'prvstoreid': prvstoreid}]
 
         return json.dumps(r)
 
@@ -492,7 +507,7 @@ class CMDHostAgent:
         return json.dumps(ack)
 
     @staticmethod
-    def cmd_restoreInstance(uuid, owner, type, nth):
+    def cmd_restoreInstance(uuid, owner, type, nth, prvstoreid = ""):
         """ request to restore the instance from it's snapshot file
         agent -> host
 
@@ -509,12 +524,15 @@ class CMDHostAgent:
         @params type: the type of this instance(winxp, word ...)
         @type nth: str
         @params nth: how many now (0, 1, ...)
+        @type prvstoreid: str
+        @param prvstoreid: the private storage id for user
         """
         r = [CMDHostAgent.restoreinstance,
              {'uuid': uuid,
               'owner': owner,
               'type': type,
-              'nth': nth}]
+              'nth': nth,
+              'prvstoreid': prvstoreid}]
 
         return json.dumps(r)
 
