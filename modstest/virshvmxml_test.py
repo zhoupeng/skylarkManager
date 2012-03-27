@@ -17,6 +17,13 @@ vvmxml.init(xml)
 
 options = { VirshOptions.SPICEHOST: '192.168.1.187',
             VirshOptions.SPICEPORT: '6111',
-            VirshOptions.AGENTMOUSE: 'server'}
+            VirshOptions.AGENTMOUSE: 'server',
+            VirshOptions.FSSOURCEDIR: '/etc/skylark/usprvdata/testprvstorage',
+            VirshOptions.FSTARGETDIR: 'mynewdata',
+            VirshOptions.FSDRTYPE: 'handle',
+            VirshOptions.FSDRWRPOLOCY: 'default',
+            VirshOptions.FSTYPE: 'file',
+            VirshOptions.FSACCESSMODE: 'passthrough'
           }
 print vvmxml.adjust(**options)
+
