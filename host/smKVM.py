@@ -218,9 +218,13 @@ class KVMNode(smBase.BaseHypervisor):
 
         return ins
 
-    def newInstanceBySnapshot(self, vmName, spicehost, spiceport):
+    def newInstanceBySnapshot(self, vmName, spicehost, spiceport,
+                              prvstoreid = ""):
         """Create a VM from checkpoint template file
         Use our storage system to parse vmName
+
+        @type prvstoreid: str
+        @param prvstoreid: the private storage id for user
         """
         # General and proper way(compatible with general fs
         # and my coming dfs shared fs):
@@ -229,6 +233,9 @@ class KVMNode(smBase.BaseHypervisor):
         # and adjust the necessary params of xml header
         # then restore from the copy?
         # Here we use skyalrk storage to tuning temporarily.
+        # TODO: init prvstorid parameter to vm-xml,
+        # but it's stricked by ifs/cifs, need udfs/kdfs to finish
+        print "%s\n" % prvstorid
         ckp = "%s/%s.ckp" % (HV_CKP_TEMPLATE_PATH, vmName)
         ins = self._runVirshRestore(ckp, vmName, spicehost, spiceport)
         return ins

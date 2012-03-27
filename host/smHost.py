@@ -269,9 +269,12 @@ class AgentCMDThread(threading.Thread):
                     instanceid += '_' + '%s' % hport
                     instanceid += '@' + jsobj[1]['type']
 
+                    prvstoreid = jsobj[1]['prvstoreid']
+
                     inst = self.host.node.newInstanceBySnapshot(instanceid,
                                                                 hip,
-                                                                hport)
+                                                                hport,
+                                                                prvstoreid)
 
                     acknewins = None
                     if inst:

@@ -383,10 +383,18 @@ def newInstanceBySnapshot(username, passwd, type):
         if i.service.type == type and i.state == OrderState.ORDERED:
             od = i
             break
+
+    prvstorid = ""
+    for j in od_qs:
+        if j.service.category == Service.CAT_DATA:
+            prvstorid = j.instanceID()
+            break
+
     if od:
         newInsBySnap = CMDClientAgent.cmd_newInstanceBySnapshot(username,
                                                            type,
-                                                           "%s" % od.num)
+                                                           "%s" % od.num,
+                                                           prvstorid)
         soc = socket.socket(type = socket.SOCK_DGRAM)
         soc.sendto(newInsBySnap, (CLIENTSRV_HOST, CLIENTSRV_PORT))
 
