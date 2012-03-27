@@ -22,11 +22,21 @@ class VirshOptions:
     SPICEPORT = "devices/graphics[@port]"
     SPICEHOST = "devices/graphics[@listen]"
     AGENTMOUSE = "devices/graphics/mouse"
+    FSTYPE = "devices/filesystem[@type]"
+    FSACCESSMODE = "devices/filesystem[@accessmode]"
+    FSDRTYPE = "devices/filesystem/driver[@type]"
+    FSDRWRPOLOCY = "devices/filesystem/driver[@wrpolicy]"
+    FSSOURCEDIR = "devices/filesystem/source[@dir]"
+    FSTARGETDIR = "devices/filesystem/target[@dir]"
 
     # The paths of related elements or attributes
     GRAPHICS = "devices/graphics"
     LISTEN = "devices/graphics/listen" # [@address]
     GRAPHICSTYPE = "devices/graphics[@type]" # Not used yet
+    FILESYSTEM = "devices/filesystem"
+    FSDRIVER = "devices/filesystem/driver"
+    FSSOURCE = "devices/filesystem/source"
+    FSTARGET = "devices/filesystem/target"
 
 class VirshVMXML:
     """ helper for virsh vm xml modifying
@@ -107,6 +117,36 @@ class VirshVMXML:
                 agentmouse.attrib["mode"] = options[k]
 
                 tag = 1
+            if k == VirshOptions.FSSOURCEDIR:
+                fssource = self._tree.find(VirshOptions.FSSOURCE)
+                if fssource is not None:
+                    fssource.attrib["dir"] = options[k]
+                    tag = 1
+            if k == VirshOptions.FSTARGETDIR:
+                fstarget = self._tree.find(VirshOptions.FSTARGET)
+                if fstarget is not None:
+                    fstarget.attrib["dir"] = options[k]
+                    tag = 1
+            if k == VirshOptions.FSDRTYPE:
+                fsdriver = self._tree.find(VirshOptions.FSDRIVER)
+                if fsdriver is not None:
+                    fsdriver.attrib["type"] = options[k]
+                    tag = 1
+            if k == VirshOptions.FSDRWRPOLOCY:
+                fsdriver = self._tree.find(VirshOptions.FSDRIVER)
+                if fsdriver is not None:
+                    fsdriver.attrib["wrpolicy"] = options[k]
+                    tag = 1
+            if k == VirshOptions.FSTYPE:
+                fs = self._tree.find(VirshOptions.FILESYSTEM)
+                if fs is not None:
+                    fs.attrib["type"] = options[k]
+                    tag = 1
+            if k == VirshOptions.FSACCESSMODE:
+                fs = self._tree.find(VirshOptions.FILESYSTEM)
+                if fs is not None:
+                    fs.attrib["accessmode"] = options[k]
+                    tag = 1
 
         if tag:
             sio = StringIO()
