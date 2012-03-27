@@ -233,9 +233,9 @@ class KVMNode(smBase.BaseHypervisor):
         # and adjust the necessary params of xml header
         # then restore from the copy?
         # Here we use skyalrk storage to tuning temporarily.
-        # TODO: init prvstorid parameter to vm-xml,
+        # TODO: init prvstoreid parameter to vm-xml,
         # but it's stricked by ifs/cifs, need udfs/kdfs to finish
-        print "%s\n" % prvstorid
+        print "%s\n" % prvstoreid
         ckp = "%s/%s.ckp" % (HV_CKP_TEMPLATE_PATH, vmName)
         ins = self._runVirshRestore(ckp, vmName, spicehost, spiceport)
         return ins
