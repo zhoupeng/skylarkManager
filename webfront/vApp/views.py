@@ -319,10 +319,18 @@ def restoreInstance(username, passwd, instanceid):
          return CMDvApp.ack_restoreInstance(Status.FAIL,
                                  "%s not in SAVED state" % instanceid)
 
+    prvstoreid = ""
+    for j in od_qs:
+        if j.service.category == Service.CAT_DATA:
+            prvstoreid = j.instanceID()
+            break
+
     restoreins = CMDClientAgent.cmd_restoreInstance(username,
                                                    od.service.type,
                                                    "%s" % od.num,
-                                                   od.huuid)
+                                                   od.huuid,
+                                                   prvstoreid)
+
     soc = socket.socket(type = socket.SOCK_DGRAM)
     soc.sendto(restoreins, (CLIENTSRV_HOST, CLIENTSRV_PORT))
 

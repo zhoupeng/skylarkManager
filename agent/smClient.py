@@ -140,7 +140,8 @@ class Client(threading.Thread):
                 req2host = CMDHostAgent.cmd_restoreInstance(h.getUUID(),
                                                             jsobj[1]['owner'],
                                                             jsobj[1]['type'],
-                                                            jsobj[1]['nth'])
+                                                            jsobj[1]['nth'],
+                                                            jsobj[1]['prvstoreid'])
                 h.sock.send(req2host)
             elif jsobj[0] == CMDClientAgent.saveinstance:
                 h = self.sched.schedule(hosts, hostuuid = jsobj[1]['hostuuid'])

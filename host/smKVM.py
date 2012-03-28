@@ -271,7 +271,8 @@ class KVMNode(smBase.BaseHypervisor):
 
         return ins
 
-    def restoreInstance(self, vmName, spicehost, spiceport):
+    def restoreInstance(self, vmName, spicehost, spiceport,
+                        prvstoreid = ""):
         """Restore a VM from it's own checkpoint file
         Don't use and allow the storage system to parse vmName, keep
         the same as you see.
@@ -283,6 +284,8 @@ class KVMNode(smBase.BaseHypervisor):
         @param spicehost: This host's ip for this spice server
         @type spiceport: int
         @param spiceport: the port for this spice server
+        @type prvstoreid: str
+        @param prvstoreid: the private storage id for user
         """
         vmxml = "%s/%s.xml" % (HV_VM_CONFIG_PATH, vmName)
         # Adjust(modify) the spiceport(host) fields of the xml file

@@ -384,9 +384,13 @@ class AgentCMDThread(threading.Thread):
                     # when skylark storage get transparent
                     instanceid = jsobj[1]['owner'] + jsobj[1]['nth']
                     instanceid += jsobj[1]['type']
+
+                    prvstoreid = jsobj[1]['prvstoreid']
+
                     inst = self.host.node.restoreInstance(instanceid,
                                                          hip,
-                                                         hport)
+                                                         hport,
+                                                         prvstoreid)
 
                     status = Status.FAIL
                     msg = 'failed to restore instance'
