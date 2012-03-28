@@ -26,4 +26,6 @@ options = { VirshOptions.SPICEHOST: '192.168.1.187',
             VirshOptions.FSACCESSMODE: 'passthrough'
           }
 print vvmxml.adjust(**options)
+print vvmxml.find("devices/graphics")
+print vvmxml.find("devices/notexist")
 

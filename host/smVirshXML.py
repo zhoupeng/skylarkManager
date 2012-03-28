@@ -66,6 +66,15 @@ class VirshVMXML:
 
         return 1
 
+    def find(self, path):
+        """ find to check if the sub element exists, if exist
+        return the Element type elem, else return None.
+
+        @type path: str
+        @param path: the path of the sub element 
+        """
+        return self._tree.find(path)
+
     def adjust(self, **options):
         """ modify the vm's xml config file based on options
 
