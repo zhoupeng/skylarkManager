@@ -297,6 +297,18 @@ class KVMNode(smBase.BaseHypervisor):
         options = {VirshOptions.SPICEHOST: spicehost,
                    VirshOptions.SPICEPORT: str(spiceport),
                    VirshOptions.AGENTMOUSE: 'server'}
+        if prvstoreid:
+            fssource = "%s/%s" % (US_PRV_STORE_PATH, prvstoreid)
+            if not os.path.exists(fssource):
+                os.makedirs(fssource)
+            fstarget = "iskylark"
+            options.update({VirshOptions.FSSOURCEDIR: fssource,
+                           VirshOptions.FSTARGET: fstarget,
+                           VirshOptions.FSDRTYPE: 'path',
+                           VirshOptions.FSDRWRPOLOCY: 'immediate',
+                           VirshOptions.FSTYPE: 'mount',
+                           VirshOptions.FSACCESSMODE: 'mapped'})
+
         if not vvmxml.adjust(**options):
             return None
 
