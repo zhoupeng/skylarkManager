@@ -309,7 +309,7 @@ class KVMNode(smBase.BaseHypervisor):
                    return None
 
             options.update({VirshOptions.FSSOURCEDIR: fssource,
-                           VirshOptions.FSTARGET: fstarget,
+                           VirshOptions.FSTARGETDIR: fstarget,
                            VirshOptions.FSDRTYPE: 'path',
                            VirshOptions.FSDRWRPOLOCY: 'immediate',
                            VirshOptions.FSTYPE: 'mount',
