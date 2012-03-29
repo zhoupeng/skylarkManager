@@ -302,6 +302,12 @@ class KVMNode(smBase.BaseHypervisor):
             if not os.path.exists(fssource):
                 os.makedirs(fssource)
             fstarget = "iskylark"
+            fs = vvmxml.find(VirshOptions.FILESYSTEM)
+            if fs is None:
+                if not vvmxml.append(vvmxml.find(VirshOptions.DEVICES),
+                   "<filesystem><driver/><source/><target/></filesystem>"):
+                   return None
+
             options.update({VirshOptions.FSSOURCEDIR: fssource,
                            VirshOptions.FSTARGET: fstarget,
                            VirshOptions.FSDRTYPE: 'path',

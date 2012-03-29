@@ -31,6 +31,7 @@ class VirshOptions:
     FSTARGETDIR = "devices/filesystem/target[@dir]"
 
     # The paths of related elements or attributes
+    DEVICES = "devices"
     GRAPHICS = "devices/graphics"
     LISTEN = "devices/graphics/listen" # [@address]
     GRAPHICSTYPE = "devices/graphics[@type]" # Not used yet
