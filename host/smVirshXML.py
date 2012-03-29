@@ -15,6 +15,7 @@ import xml
 import sys
 from cStringIO import StringIO
 import datetime
+import smLog
 
 class VirshOptions:
     """represent libvirt virsh vm xml element or attribute
@@ -163,6 +164,7 @@ class VirshVMXML:
                     listen.attrib["address"] = options[k]
 
                 tag = 1
+                continue
             if k == VirshOptions.SPICEPORT:
                 graphics = self._tree.find(VirshOptions.GRAPHICS)
                 if graphics is None:
@@ -170,6 +172,7 @@ class VirshVMXML:
                 graphics.attrib["port"] = options[k]
 
                 tag = 1
+                continue
             if k == VirshOptions.AGENTMOUSE:
                 agentmouse = self._tree.find(VirshOptions.AGENTMOUSE)
                 # if no agent mouse sub-elem, ignore this setting
@@ -178,36 +181,46 @@ class VirshVMXML:
                 agentmouse.attrib["mode"] = options[k]
 
                 tag = 1
+                continue
             if k == VirshOptions.FSSOURCEDIR:
                 fssource = self._tree.find(VirshOptions.FSSOURCE)
                 if fssource is not None:
                     fssource.attrib["dir"] = options[k]
                     tag = 1
+                continue
             if k == VirshOptions.FSTARGETDIR:
                 fstarget = self._tree.find(VirshOptions.FSTARGET)
                 if fstarget is not None:
                     fstarget.attrib["dir"] = options[k]
                     tag = 1
+                continue
             if k == VirshOptions.FSDRTYPE:
                 fsdriver = self._tree.find(VirshOptions.FSDRIVER)
                 if fsdriver is not None:
                     fsdriver.attrib["type"] = options[k]
                     tag = 1
+                continue
             if k == VirshOptions.FSDRWRPOLOCY:
                 fsdriver = self._tree.find(VirshOptions.FSDRIVER)
                 if fsdriver is not None:
                     fsdriver.attrib["wrpolicy"] = options[k]
                     tag = 1
+                continue
             if k == VirshOptions.FSTYPE:
                 fs = self._tree.find(VirshOptions.FILESYSTEM)
                 if fs is not None:
                     fs.attrib["type"] = options[k]
                     tag = 1
+                continue
             if k == VirshOptions.FSACCESSMODE:
                 fs = self._tree.find(VirshOptions.FILESYSTEM)
                 if fs is not None:
                     fs.attrib["accessmode"] = options[k]
                     tag = 1
+                continue
+            # default
+            print "%s: %s: unsupported option: %s" % (__file__,
+                                                smLog.__function__(), k)
 
         if tag:
             if not self.sync2disk():
