@@ -103,13 +103,13 @@ class VirshVMXML:
         return 1
 
     def append(self, parent, child):
-        """ append a sub element to parent element, sync
-        to the file in disk.
+        """ append a sub tree to parent,
+        sync to disk.
         
         @type parent: Element
-        @param parent: the parent element to append to 
+        @param parent: the parent ele to append to 
         @type child: str
-        @param child: a sub element in string
+        @param child: a sub tree to be appended in string
 
         @rtype: int
         @return: 1 if success, else 0

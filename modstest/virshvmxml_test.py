@@ -28,4 +28,5 @@ options = { VirshOptions.SPICEHOST: '192.168.1.187',
 print vvmxml.adjust(**options)
 print vvmxml.find("devices/graphics")
 print vvmxml.find("devices/notexist")
-print vvmxml.append(vvmxml.find("devices/graphics"), "<test test='test'/>")
+print vvmxml.append(vvmxml.find("devices/graphics"),
+"<lev1 test='test'><lev21/><lev22/></lev1>")
