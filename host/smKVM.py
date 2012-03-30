@@ -305,13 +305,14 @@ class KVMNode(smBase.BaseHypervisor):
             fs = vvmxml.find(VirshOptions.FILESYSTEM)
             if fs is None:
                 if not vvmxml.append(vvmxml.find(VirshOptions.DEVICES),
-                   "<filesystem><driver/><source/><target/></filesystem>"):
+                  #"<filesystem><driver/><source/><target/></filesystem>"):
+                  "<filesystem><source/><target/></filesystem>"):
                    return None
 
             options.update({VirshOptions.FSSOURCEDIR: fssource,
                            VirshOptions.FSTARGETDIR: fstarget,
-                           VirshOptions.FSDRTYPE: 'path',
-                           VirshOptions.FSDRWRPOLOCY: 'immediate',
+                           #VirshOptions.FSDRTYPE: 'path',
+                           #VirshOptions.FSDRWRPOLOCY: 'immediate',
                            VirshOptions.FSTYPE: 'mount',
                            VirshOptions.FSACCESSMODE: 'mapped'})
 
